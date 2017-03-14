@@ -37,17 +37,16 @@ function init() {
                           x_fill: true,
                           y_fill: false,
                           track_hover: true });
-    let icon = new St.Icon({ icon_name: 'system-run-symbolic',
-                             style_class: 'system-status-icon' });
+    let label = new St.Label({text: '00:00 UTC', opacity: 200});
 
-    button.set_child(icon);
+    button.set_child(label);
     button.connect('button-press-event', _showHello);
 }
 
 function enable() {
-    Main.panel._rightBox.insert_child_at_index(button, 0);
+    Main.panel._centerBox.insert_child_at_index(button, 1);
 }
 
 function disable() {
-    Main.panel._rightBox.remove_child(button);
+    Main.panel._centerBox.remove_child(button);
 }
