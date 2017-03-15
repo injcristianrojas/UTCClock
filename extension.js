@@ -3,11 +3,15 @@ const St = imports.gi.St;
 const Main = imports.ui.main;
 const GnomeDesktop = imports.gi.GnomeDesktop;
 const Lang = imports.lang;
+const Shell = imports.gi.Shell;
 
 let text, button, label;
-let counter = 0;
+let clock, clock_signal_id;
+
+let seconds_displayed = false;
 
 function init() {
+    clock = new GnomeDesktop.WallClock();
     button = new St.Bin({ style_class: 'panel-button',
                           reactive: true,
                           can_focus: true,
@@ -20,20 +24,21 @@ function init() {
 }
 
 function enable() {
+    update_time();
+    clock_signal_id = clock.connect('notify::clock', Lang.bind(this, this.update_time));
     Main.panel._centerBox.insert_child_at_index(button, 1);
-    clock_this();
 }
 
 function disable() {
     Main.panel._centerBox.remove_child(button);
-}
-
-function clock_this() {
-    let clock = new GnomeDesktop.WallClock();
-    let clock_signal_id = clock.connect('notify::clock', Lang.bind(this, this.update_time));
+    clock.disconnect(clock_signal_id);
 }
 
 function update_time() {
-    counter++;
-    label.set_text('' + counter);
+    var now = new Date();
+    now.setHours(now.getUTCHours());
+    now.setMinutes(now.getUTCMinutes());
+    time_format_string = seconds_displayed ? '%T' : '%H:%M';
+    time_string = Shell.util_format_date(time_format_string, now);
+    label.set_text(time_string + ' UTC');
 }
