@@ -1,1 +1,7 @@
-{"name": "UTCClock", "description": "UTC clock for the top bar", "uuid": "utcclock@injcristianrojas.github.com", "shell-version": ["3.22.3"]}
+{
+    "name": "UTCClock",
+    "description": "UTC clock for the top bar",
+    "url": "https://github.com/injcristianrojas/UTCClock",
+    "uuid": "utcclock@injcristianrojas.github.com",
+    "shell-version": ["3.22"]
+}
