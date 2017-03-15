@@ -1,4 +1,3 @@
-
 const St = imports.gi.St;
 const Main = imports.ui.main;
 const GnomeDesktop = imports.gi.GnomeDesktop;
@@ -12,13 +11,18 @@ let seconds_displayed = false;
 
 function init() {
     clock = new GnomeDesktop.WallClock();
-    button = new St.Bin({ style_class: 'panel-button',
-                          reactive: true,
-                          can_focus: true,
-                          x_fill: true,
-                          y_fill: false,
-                          track_hover: true });
-    label = new St.Label({text: '00:00 UTC', opacity: 200});
+    button = new St.Bin({
+        style_class: 'panel-button',
+        reactive: true,
+        can_focus: true,
+        x_fill: true,
+        y_fill: false,
+        track_hover: true
+    });
+    label = new St.Label({
+        text: '00:00 UTC',
+        opacity: 200
+    });
 
     button.set_child(label);
 }
