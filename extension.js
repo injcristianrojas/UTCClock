@@ -14,7 +14,7 @@ function init() {
     button = new St.Bin({
         style_class: 'panel-button',
         reactive: true,
-        can_focus: true,
+        can_focus: false,
         x_fill: true,
         y_fill: false,
         track_hover: true
