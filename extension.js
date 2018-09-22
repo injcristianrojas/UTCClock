@@ -42,7 +42,7 @@ function update_time() {
     var now = new Date();
     now.setHours(now.getUTCHours());
     now.setMinutes(now.getUTCMinutes());
-    time_format_string = seconds_displayed ? '%T' : '%H:%M';
-    time_string = Shell.util_format_date(time_format_string, now);
+    let time_format_string = seconds_displayed ? '%T' : '%H:%M';
+    let time_string = Shell.util_format_date(time_format_string, now);
     label.set_text(time_string + ' UTC');
 }
