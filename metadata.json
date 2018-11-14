@@ -3,5 +3,5 @@
     "description": "UTC clock for the top bar",
     "url": "https://github.com/injcristianrojas/UTCClock",
     "uuid": "utcclock@injcristianrojas.github.com",
-    "shell-version": ["3.22", "3.30"]
+    "shell-version": ["3.22", "3.24", "3.26", "3.28", "3.30"]
 }
