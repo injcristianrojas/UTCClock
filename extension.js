@@ -17,6 +17,7 @@ function init() {
         can_focus: false,
         x_fill: true,
         y_fill: false,
+        y_align: St.Align.MIDDLE,
         track_hover: true
     });
     label = new St.Label({
@@ -42,7 +43,6 @@ function update_time() {
     var now = new Date();
     now.setHours(now.getUTCHours());
     now.setMinutes(now.getUTCMinutes());
-    let time_format_string = seconds_displayed ? '%T' : '%H:%M';
-    let time_string = Shell.util_format_date(time_format_string, now);
-    label.set_text(time_string + ' UTC');
+    var format = new Intl.DateTimeFormat('default', {hour: 'numeric', minute: 'numeric', hour12: false});
+    label.set_text(format.format(now) + ' UTC');
 }
