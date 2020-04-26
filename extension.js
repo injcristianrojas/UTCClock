@@ -8,13 +8,17 @@ const Shell = imports.gi.Shell;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
+const Convenience = Me.imports.convenience;
 
 let text, button, label;
 let clock, clock_signal_id;
+let Schema;
 
 let seconds_displayed = false;
 
 function init() {
+    Schema = Convenience.getSettings();
+    
     clock = new GnomeDesktop.WallClock();
     button = new St.Bin({
         style_class: 'panel-button',

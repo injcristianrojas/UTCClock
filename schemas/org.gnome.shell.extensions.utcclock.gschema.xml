@@ -1,0 +1,8 @@
+<schemalist gettext-domain="UTCClock">
+    <schema id="org.gnome.shell.extensions.utcclock" path="/org/gnome/shell/extensions/utcclock/">
+        <key name="show-seconds" type="b">
+            <default>true</default>
+            <summary>Show seconds</summary>
+        </key>
+    </schema>
+</schemalist>
