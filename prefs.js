@@ -21,7 +21,7 @@ function buildPrefsWidget() {
     GLib.timeout_add(0, 0, () => {
         let window = prefsWidget.get_toplevel();
         let headerBar = window.get_titlebar();
-        headerbar.title = `${Me.metadata.name} Preferences`;
+        headerBar.title = `${Me.metadata.name} Preferences`;
     });
 
     return prefsWidget;
