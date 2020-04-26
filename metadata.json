@@ -3,6 +3,8 @@
     "description": "UTC clock for the top bar",
     "url": "https://github.com/injcristianrojas/UTCClock",
     "uuid": "utcclock@injcristianrojas.github.com",
+    "settings-schema": "org.gnome.shell.extensions.utcclock",
+    "gettext-domain": "UTCClock",
     "shell-version": ["3.22", "3.24", "3.26", "3.28", "3.30", "3.32", "3.34"],
     "version": "0.10"
 }
