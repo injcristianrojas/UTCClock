@@ -2,53 +2,38 @@
 
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const Gio = imports.gi.Gio;
-const Lang = imports.lang;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
-const Convenience = Me.imports.convenience;
-const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
-const _ = Gettext.gettext;
+
+const UTCClockSettingsWidget = Me.imports.prefs_window.UTCClockSettingsWidget;
 
 function init() {
     log(`initializing ${Me.metadata.name} Preferences`);
 }
 
-const UTCClockSettings = new GObject.Class({
-    Name: 'UTCClockSettings',
-    Extends: Gtk.Grid,
+const UTCClockSettingsBox = new GObject.Class({
+    Name: 'UTCClock.Prefs.UTCClockSettingsBox',
+    GTypeName: 'UTCClockSettingsBox',
+    Extends: Gtk.Box,
 
-    _init: function (params) {
-        this.parent(params);
-        this._settings = Convenience.getSettings();
+    _init: function() {
+        this.parent();
 
-        // Seconds
-        let label1 = new Gtk.Label({label: "Show seconds", xalign: 0});
-        let widget1 = new Gtk.Switch({halign: Gtk.Align.END});
-        this._settings.bind('show-seconds', widget1, 'active', Gio.SettingsBindFlags.DEFAULT);
-        
-        // Text
-        let label2 = new Gtk.Label({label: "Time text to show", xalign: 0});
-        let widget2 = new Gtk.ComboBoxText();
-        widget2.append('UTC', _("UTC"));
-        widget2.append('GMT', _("GMT"));
-        widget2.append('Z', _("Z"));
-        this._settings.bind('time-text', widget2, 'active-id', Gio.SettingsBindFlags.DEFAULT);
-        
-        this.margin = 20;
-        this.row_spacing = 10;
-        this.column_spacing = 10;
-        this.attach(label1, 0, 1, 1, 1);
-        this.attach(widget1, 1, 1, 1, 1);
-        this.attach(label2, 0, 2, 1, 1);
-        this.attach(widget2, 1, 2, 1, 1);
+        let box_outer = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
+            spacing: 60
+        });
+        this.add(box_outer);
+
+        let widget = new UTCClockSettingsWidget();
+        box_outer.pack_start(widget, true, true, 0);
     }
-})
 
+});
 
 function buildPrefsWidget() {
-    const widget = new UTCClockSettings();
-    widget.show_all();
-    return widget;
+    const box = new UTCClockSettingsBox();
+    box.show_all();
+    return box;
 }
