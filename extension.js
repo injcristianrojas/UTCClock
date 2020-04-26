@@ -1,8 +1,13 @@
+'use strict';
+
 const St = imports.gi.St;
 const Main = imports.ui.main;
 const GnomeDesktop = imports.gi.GnomeDesktop;
 const Lang = imports.lang;
 const Shell = imports.gi.Shell;
+
+const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
 
 let text, button, label;
 let clock, clock_signal_id;
@@ -29,14 +34,18 @@ function init() {
 }
 
 function enable() {
+    log(`enabling ${Me.metadata.name} version ${Me.metadata.version}`);
     update_time();
     clock_signal_id = clock.connect('notify::clock', Lang.bind(this, this.update_time));
     Main.panel._centerBox.insert_child_at_index(button, 1);
+    log(`${Me.metadata.name} enabled.`);
 }
 
 function disable() {
+    log(`disabling ${Me.metadata.name} version ${Me.metadata.version}`);
     Main.panel._centerBox.remove_child(button);
     clock.disconnect(clock_signal_id);
+    log(`${Me.metadata.name} disabled.`);
 }
 
 function update_time() {
