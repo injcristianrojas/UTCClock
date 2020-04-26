@@ -4,5 +4,9 @@
             <default>true</default>
             <summary>Show seconds</summary>
         </key>
+        <key name="time-text" type="s">
+            <default>"UTC"</default>
+            <summary>Time text</summary>
+        </key>
     </schema>
 </schemalist>

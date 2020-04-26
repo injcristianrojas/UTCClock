@@ -18,9 +18,12 @@ const format_with_seconds = new Intl.DateTimeFormat('default', {hour: 'numeric',
 const format_without_seconds = new Intl.DateTimeFormat('default', {hour: 'numeric', minute: 'numeric', hour12: false});
 let seconds_displayed_format = format_without_seconds;
 
+let time_text = 'UTC';
+
 function init() {
     settings = Convenience.getSettings();
     settings.connect('changed::show-seconds', Lang.bind(this, setSecondsDisplayed));
+    settings.connect('changed::time-text', Lang.bind(this, setTimeText));
     
     clock = new GnomeDesktop.WallClock();
     button = new St.Bin({
@@ -33,11 +36,13 @@ function init() {
         track_hover: true
     });
     label = new St.Label({
-        text: '00:00 UTC',
+        text: '00:00 ' + time_text,
         opacity: 200
     });
 
     button.set_child(label);
+    setSecondsDisplayed();
+    setTimeText();
 }
 
 function enable() {
@@ -59,11 +64,17 @@ function update_time() {
     var now = new Date();
     now.setHours(now.getUTCHours());
     now.setMinutes(now.getUTCMinutes());
-    label.set_text(seconds_displayed_format.format(now) + ' UTC');
+    label.set_text(seconds_displayed_format.format(now) + ' ' + time_text);
 }
 
-function setSecondsDisplayed(displayed) {
+function setSecondsDisplayed() {
     let secondsDisplayed = settings.get_boolean('show-seconds');
     seconds_displayed_format = secondsDisplayed ? format_with_seconds : format_without_seconds;
+    update_time();
+}
+
+function setTimeText() {
+    let text = settings.get_string('time-text');
+    time_text = text;
     update_time();
 }
