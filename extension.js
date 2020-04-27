@@ -5,6 +5,7 @@ const Main = imports.ui.main;
 const GnomeDesktop = imports.gi.GnomeDesktop;
 const Lang = imports.lang;
 const Shell = imports.gi.Shell;
+const Util = imports.misc.util;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -56,6 +57,7 @@ function init() {
     });
 
     button.set_child(label);
+    button.connect('button-press-event', showMenu);
     setSecondsDisplayed();
     setTimeText();
 }
@@ -92,4 +94,11 @@ function setTimeText() {
     let text = settings.get_string('time-text');
     time_text = text;
     update_time();
+}
+
+function showMenu() {
+    Util.spawn([
+        "gnome-shell-extension-prefs",
+        Me.uuid
+    ]);
 }
