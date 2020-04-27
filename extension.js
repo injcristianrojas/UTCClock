@@ -14,8 +14,23 @@ let text, button, label;
 let clock, clock_signal_id;
 let settings;
 
-const format_with_seconds = new Intl.DateTimeFormat('default', {hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false});
-const format_without_seconds = new Intl.DateTimeFormat('default', {hour: 'numeric', minute: 'numeric', hour12: false});
+const format_with_seconds = new Intl.DateTimeFormat(
+    'default',
+    {
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false
+    }
+);
+const format_without_seconds = new Intl.DateTimeFormat(
+    'default',
+    {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: false
+    }
+);
 let seconds_displayed_format = format_without_seconds;
 
 let time_text = 'UTC';
@@ -24,7 +39,7 @@ function init() {
     settings = Convenience.getSettings();
     settings.connect('changed::show-seconds', Lang.bind(this, setSecondsDisplayed));
     settings.connect('changed::time-text', Lang.bind(this, setTimeText));
-    
+
     clock = new GnomeDesktop.WallClock();
     button = new St.Bin({
         style_class: 'panel-button',
