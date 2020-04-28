@@ -63,18 +63,18 @@ function init() {
 }
 
 function enable() {
-    log(`enabling ${Me.metadata.name} version ${Me.metadata.version}`);
+    log_this(`enabling...`);
     update_time();
     clock_signal_id = clock.connect('notify::clock', Lang.bind(this, this.update_time));
     Main.panel._centerBox.insert_child_at_index(button, 1);
-    log(`${Me.metadata.name} enabled.`);
+    log_this(`enabled.`);
 }
 
 function disable() {
-    log(`disabling ${Me.metadata.name} version ${Me.metadata.version}`);
+    log_this(`disabling...`);
     Main.panel._centerBox.remove_child(button);
     clock.disconnect(clock_signal_id);
-    log(`${Me.metadata.name} disabled.`);
+    log_this(`disabled.`);
 }
 
 function update_time() {
@@ -101,4 +101,8 @@ function showMenu() {
         "gnome-shell-extension-prefs",
         Me.uuid
     ]);
+}
+
+function log_this(string) {
+    log(`[${Me.metadata.name}-${Me.metadata.version}] ${string}`)
 }
