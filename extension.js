@@ -76,6 +76,11 @@ function enable() {
 
 function disable() {
     log_this(`disabling...`);
+
+    settings.disconnect('changed::show-seconds');
+    settings.disconnect('changed::time-text');
+    button.disconnect('button-press-event');
+
     Main.panel._centerBox.remove_child(button);
     clock.disconnect(clock_signal_id);
     log_this(`disabled.`);
