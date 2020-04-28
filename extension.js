@@ -6,6 +6,7 @@ const GnomeDesktop = imports.gi.GnomeDesktop;
 const Lang = imports.lang;
 const Shell = imports.gi.Shell;
 const Util = imports.misc.util;
+const Config = imports.misc.config;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -33,7 +34,7 @@ const format_without_seconds = new Intl.DateTimeFormat(
     }
 );
 let seconds_displayed_format = format_without_seconds;
-
+let shellMinorVersion = parseInt(Config.PACKAGE_VERSION.split('.')[1]);
 let time_text = 'UTC';
 
 function init() {
@@ -46,7 +47,7 @@ function init() {
         can_focus: false,
         x_fill: true,
         y_fill: false,
-        y_align: St.Align.MIDDLE,
+        y_align: shellMinorVersion < 36 ? St.Align.MIDDLE : St.Align.END,
         track_hover: true
     });
 
