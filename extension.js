@@ -38,8 +38,6 @@ let time_text = 'UTC';
 
 function init() {
     settings = Convenience.getSettings();
-    settings.connect('changed::show-seconds', Lang.bind(this, setSecondsDisplayed));
-    settings.connect('changed::time-text', Lang.bind(this, setTimeText));
 
     clock = new GnomeDesktop.WallClock();
     button = new St.Bin({
@@ -51,19 +49,25 @@ function init() {
         y_align: St.Align.MIDDLE,
         track_hover: true
     });
+
     label = new St.Label({
         text: '00:00 ' + time_text,
         opacity: 200
     });
-
+    
     button.set_child(label);
-    button.connect('button-press-event', showMenu);
-    setSecondsDisplayed();
-    setTimeText();
 }
 
 function enable() {
     log_this(`enabling...`);
+
+    settings.connect('changed::show-seconds', Lang.bind(this, setSecondsDisplayed));
+    settings.connect('changed::time-text', Lang.bind(this, setTimeText));
+
+    button.connect('button-press-event', showMenu);
+    setSecondsDisplayed();
+    setTimeText();
+
     update_time();
     clock_signal_id = clock.connect('notify::clock', Lang.bind(this, this.update_time));
     Main.panel._centerBox.insert_child_at_index(button, 1);
