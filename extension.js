@@ -16,24 +16,12 @@ let text, button, label;
 let clock, clock_signal_id;
 let settings;
 
-const format_with_seconds = new Intl.DateTimeFormat(
-    'default',
-    {
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hour12: false
-    }
-);
-const format_without_seconds = new Intl.DateTimeFormat(
-    'default',
-    {
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: false
-    }
-);
-let seconds_displayed_format = format_without_seconds;
+let format_params = {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+}
+
 let shellMinorVersion = parseInt(Config.PACKAGE_VERSION.split('.')[1]);
 let time_text = 'UTC';
 
@@ -91,12 +79,17 @@ function update_time() {
     var now = new Date();
     now.setHours(now.getUTCHours());
     now.setMinutes(now.getUTCMinutes());
-    label.set_text(seconds_displayed_format.format(now) + ' ' + time_text);
+    label.set_text(new Intl.DateTimeFormat('default', format_params).format(now) + ' ' + time_text);
 }
 
 function setSecondsDisplayed() {
     let secondsDisplayed = settings.get_boolean('show-seconds');
-    seconds_displayed_format = secondsDisplayed ? format_with_seconds : format_without_seconds;
+    if (secondsDisplayed) {
+        format_params['second'] = '2-digit';
+    } else {
+        delete format_params['second'];
+    }
+    //seconds_displayed_format = secondsDisplayed ? format_with_seconds : format_without_seconds;
     update_time();
 }
 
