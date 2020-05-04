@@ -104,12 +104,12 @@ function setDateDisplayed() {
     let dateDisplayed = settings.get_boolean('show-date');
     if (dateDisplayed) {
         format_params['weekday'] = 'short';
-        format_params['day'] = '2-digit';
-        format_params['month'] = '2-digit';
+        format_params['month'] = 'short';
+        format_params['day'] = 'numeric';
     } else {
         delete format_params['weekday'];
-        delete format_params['day'];
         delete format_params['month'];
+        delete format_params['day'];
     }
     update_time();
 }
