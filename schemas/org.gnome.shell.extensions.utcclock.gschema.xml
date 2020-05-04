@@ -8,5 +8,9 @@
             <default>"UTC"</default>
             <summary>Time text</summary>
         </key>
+        <key name="show-date" type="b">
+            <default>false</default>
+            <summary>Show date</summary>
+        </key>
     </schema>
 </schemalist>

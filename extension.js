@@ -40,7 +40,7 @@ function init() {
     });
 
     label = new St.Label({
-        text: '00:00 ' + time_text,
+        text: '00:00:00' + time_text,
         opacity: 200
     });
     
@@ -52,10 +52,12 @@ function enable() {
 
     settings.connect('changed::show-seconds', Lang.bind(this, setSecondsDisplayed));
     settings.connect('changed::time-text', Lang.bind(this, setTimeText));
+    settings.connect('changed::show-date', Lang.bind(this, setDateDisplayed));
 
     button.connect('button-press-event', showMenu);
     setSecondsDisplayed();
     setTimeText();
+    setDateDisplayed();
 
     update_time();
     clock_signal_id = clock.connect('notify::clock', Lang.bind(this, this.update_time));
@@ -68,6 +70,7 @@ function disable() {
 
     settings.disconnect('changed::show-seconds');
     settings.disconnect('changed::time-text');
+    settings.disconnect('changed::show-date');
     button.disconnect('button-press-event');
 
     Main.panel._centerBox.remove_child(button);
@@ -77,9 +80,8 @@ function disable() {
 
 function update_time() {
     var now = new Date();
-    now.setHours(now.getUTCHours());
-    now.setMinutes(now.getUTCMinutes());
-    label.set_text(new Intl.DateTimeFormat('default', format_params).format(now) + ' ' + time_text);
+    var utc = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+    label.set_text(new Intl.DateTimeFormat('default', format_params).format(utc) + ' ' + time_text);
 }
 
 function setSecondsDisplayed() {
@@ -89,13 +91,26 @@ function setSecondsDisplayed() {
     } else {
         delete format_params['second'];
     }
-    //seconds_displayed_format = secondsDisplayed ? format_with_seconds : format_without_seconds;
     update_time();
 }
 
 function setTimeText() {
     let text = settings.get_string('time-text');
     time_text = text;
+    update_time();
+}
+
+function setDateDisplayed() {
+    let dateDisplayed = settings.get_boolean('show-date');
+    if (dateDisplayed) {
+        format_params['weekday'] = 'short';
+        format_params['day'] = '2-digit';
+        format_params['month'] = '2-digit';
+    } else {
+        delete format_params['weekday'];
+        delete format_params['day'];
+        delete format_params['month'];
+    }
     update_time();
 }
 
