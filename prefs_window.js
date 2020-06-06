@@ -32,10 +32,15 @@ const UTCClockSettingsWidget = new GObject.Class({
         widget2.append('Z', _("Z"));
         this._settings.bind('time-text', widget2, 'active-id', Gio.SettingsBindFlags.DEFAULT);
 
-        // Seconds
+        // Show date
         let label3 = new Gtk.Label({label: "Show date", halign: Gtk.Align.START, hexpand: true});
         let widget3 = new Gtk.Switch({halign: Gtk.Align.END});
         this._settings.bind('show-date', widget3, 'active', Gio.SettingsBindFlags.DEFAULT);
+        
+        // Light opacity
+        let label4 = new Gtk.Label({label: "Light opacity", halign: Gtk.Align.START, hexpand: true});
+        let widget4 = new Gtk.Switch({halign: Gtk.Align.END});
+        this._settings.bind('light-opacity', widget4, 'active', Gio.SettingsBindFlags.DEFAULT);
         
         this.margin = 20;
         this.row_spacing = 10;
@@ -47,5 +52,7 @@ const UTCClockSettingsWidget = new GObject.Class({
         this.attach(widget2, 1, 2, 1, 1);
         this.attach(label3, 0, 3, 1, 1);
         this.attach(widget3, 1, 3, 1, 1);
+        this.attach(label4, 0, 4, 1, 1);
+        this.attach(widget4, 1, 4, 1, 1);
     }
 });
