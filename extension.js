@@ -16,6 +16,8 @@ let text, button, label;
 let clock, clock_signal_id;
 let settings;
 
+let signals = [];
+
 let format_params = {
     hour: '2-digit',
     minute: '2-digit',
@@ -50,19 +52,19 @@ function init() {
 function enable() {
     log_this(`enabling...`);
 
-    settings.connect('changed::show-seconds', Lang.bind(this, setSecondsDisplayed));
-    settings.connect('changed::time-text', Lang.bind(this, setTimeText));
-    settings.connect('changed::show-date', Lang.bind(this, setDateDisplayed));
-    settings.connect('changed::light-opacity', Lang.bind(this, setLightOpacity));
+    signals[0] = settings.connect('changed::show-seconds', Lang.bind(this, setSecondsDisplayed));
+    signals[1] = settings.connect('changed::time-text', Lang.bind(this, setTimeText));
+    signals[2] = settings.connect('changed::show-date', Lang.bind(this, setDateDisplayed));
+    signals[3] = settings.connect('changed::light-opacity', Lang.bind(this, setLightOpacity));
 
-    button.connect('button-press-event', showMenu);
+    signals[4] = button.connect('button-press-event', showMenu);
     setSecondsDisplayed();
     setTimeText();
     setDateDisplayed();
     setLightOpacity();
 
     update_time();
-    clock_signal_id = clock.connect('notify::clock', Lang.bind(this, this.update_time));
+    signals[5] = clock.connect('notify::clock', Lang.bind(this, this.update_time));
     Main.panel._centerBox.insert_child_at_index(button, 1);
     log_this(`enabled.`);
 }
@@ -70,14 +72,14 @@ function enable() {
 function disable() {
     log_this(`disabling...`);
 
-    settings.disconnect('changed::show-seconds');
-    settings.disconnect('changed::time-text');
-    settings.disconnect('changed::show-date');
-    settings.disconnect('changed::light-opacity');
-    button.disconnect('button-press-event');
+    settings.disconnect(signals[0]);
+    settings.disconnect(signals[1]);
+    settings.disconnect(signals[2]);
+    settings.disconnect(signals[3]);
+    button.disconnect(signals[4]);
 
     Main.panel._centerBox.remove_child(button);
-    clock.disconnect(clock_signal_id);
+    clock.disconnect(signals[5]);
     log_this(`disabled.`);
 }
 
