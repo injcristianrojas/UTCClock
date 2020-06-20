@@ -98,8 +98,7 @@ function setSecondsDisplayed() {
 }
 
 function setTimeText() {
-    let text = settings.get_string('time-text');
-    time_text = text;
+    time_text = settings.get_string('time-text');
     update_time();
 }
 
