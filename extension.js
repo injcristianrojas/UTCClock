@@ -35,8 +35,8 @@ function init() {
         style_class: 'panel-button',
         reactive: true,
         can_focus: false,
-        x_fill: true,
-        y_fill: false,
+        x_expand: true,
+        y_expand: false,
         y_align: shellMinorVersion < 36 ? St.Align.MIDDLE : St.Align.END,
         track_hover: true
     });
