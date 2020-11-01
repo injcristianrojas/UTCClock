@@ -14,6 +14,7 @@ Go to https://extensions.gnome.org/extension/1183/utcclock/ and turn on the exte
 ### Manual
 
 ```
-cd ~/.local/share/gnome-shell/extensions/
-git clone https://github.com/injcristianrojas/UTCClock.git utcclock@injcristianrojas.github.com
+git clone https://github.com/injcristianrojas/UTCClock.git
+cd UTCClock
+make install
 ```
