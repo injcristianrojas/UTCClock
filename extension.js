@@ -42,7 +42,6 @@ function init() {
     });
 
     label = new St.Label({
-        text: '00:00:00' + time_text,
         opacity: 200
     });
     
