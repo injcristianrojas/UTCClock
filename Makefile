@@ -16,5 +16,7 @@ install: compile-schemas
 uninstall:
 	rm -rf $(PLUGIN_LOCATION)
 
+reinstall: uninstall install
+
 clean:
 	rm -f *.zip
