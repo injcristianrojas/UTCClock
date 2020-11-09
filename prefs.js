@@ -5,11 +5,13 @@ const Gtk = imports.gi.Gtk;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
+const Convenience = Me.imports.convenience;
+const log_this = Convenience.log_this;
 
 const UTCClockSettingsWidget = Me.imports.prefs_window.UTCClockSettingsWidget;
 
 function init() {
-    log(`initializing ${Me.metadata.name} Preferences`);
+    log_this(`Initializing Preferences...`);
 }
 
 const UTCClockSettingsBox = new GObject.Class({

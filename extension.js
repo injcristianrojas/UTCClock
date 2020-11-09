@@ -11,6 +11,7 @@ const Config = imports.misc.config;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
+const log_this = Convenience.log_this;
 
 let text, button, label;
 let clock, clock_signal_id;
@@ -127,8 +128,4 @@ function showMenu() {
         "gnome-shell-extension-prefs",
         Me.uuid
     ]);
-}
-
-function log_this(string) {
-    log(`[${Me.metadata.name}-${Me.metadata.version}] ${string}`)
 }
