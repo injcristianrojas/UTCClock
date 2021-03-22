@@ -26,7 +26,7 @@ const UTCClockSettingsBox = new GObject.Class({
 
         let builder = new Gtk.Builder();
         builder.set_translation_domain('gettext-domain');
-        builder.add_from_file(Me.path + '/prefs.ui');
+        builder.add_from_file(Me.path + isGnome40 ? 'prefs40.ui' : '/prefs.ui');
 
         this.add(builder.get_object('main_prefs'));
 
