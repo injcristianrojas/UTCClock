@@ -11,8 +11,8 @@ const Config = imports.misc.config;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
-const log_this = Convenience.log_this;
 
+const log_this = Convenience.log_this;
 const version_data = Convenience.version_data;
 const isGnome40 = Convenience.isGnome40;
 
