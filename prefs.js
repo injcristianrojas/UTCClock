@@ -9,6 +9,9 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 const log_this = Convenience.log_this;
 
+const version_data = Convenience.version_data;
+const isGnome40 = Convenience.isGnome40;
+
 function init() {
     log_this(`Initializing Preferences...`);
 }

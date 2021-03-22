@@ -13,7 +13,8 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 const log_this = Convenience.log_this;
 
-const version_data = Config.PACKAGE_VERSION.split('.');
+const version_data = Convenience.version_data;
+const isGnome40 = Convenience.isGnome40;
 
 let text, button, label;
 let clock, clock_signal_id;
@@ -21,7 +22,6 @@ let settings;
 
 let signals = [];
 
-let isGnome40 = parseInt(version_data[0]) >= 40;
 let shellMinorVersion36 = parseInt(version_data[1]) < 36;
 
 let format_params = {
