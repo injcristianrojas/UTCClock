@@ -13,14 +13,16 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 const log_this = Convenience.log_this;
 
+const version_data = Config.PACKAGE_VERSION.split('.');
+
 let text, button, label;
 let clock, clock_signal_id;
 let settings;
 
 let signals = [];
 
-let isGnome40 = parseInt(Config.PACKAGE_VERSION.split('.')[0]) >= 40;
-let shellMinorVersion36 = parseInt(Config.PACKAGE_VERSION.split('.')[1]) < 36;
+let isGnome40 = parseInt(version_data[0]) >= 40;
+let shellMinorVersion36 = parseInt(version_data[1]) < 36;
 
 let format_params = {
     hour: '2-digit',
@@ -28,7 +30,6 @@ let format_params = {
     hour12: false
 }
 let time_text = 'UTC';
-
 
 function init() {
     settings = Convenience.getSettings();
@@ -49,6 +50,7 @@ function init() {
     });
     
     button.set_child(label);
+    log_this(Config.PACKAGE_VERSION);
 }
 
 function enable() {
