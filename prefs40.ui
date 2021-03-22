@@ -84,7 +84,6 @@
         <child>
           <object class="GtkSwitch" id="widget1">
             <property name="halign">end</property>
-            <signal name="state-set" handler="on_seconds_change" swapped="no"/>
             <layout>
               <property name="column">1</property>
               <property name="row">0</property>
@@ -94,7 +93,6 @@
         <child>
           <object class="GtkSwitch" id="widget3">
             <property name="halign">end</property>
-            <signal name="state-set" handler="on_showdate_change" swapped="no"/>
             <layout>
               <property name="column">1</property>
               <property name="row">2</property>
@@ -104,7 +102,6 @@
         <child>
           <object class="GtkSwitch" id="widget4">
             <property name="halign">end</property>
-            <signal name="state-set" handler="on_lightopacity_change" swapped="no"/>
             <layout>
               <property name="column">1</property>
               <property name="row">3</property>

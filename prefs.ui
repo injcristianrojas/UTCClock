@@ -95,7 +95,6 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="halign">end</property>
-            <signal name="state-set" handler="on_seconds_change" swapped="no"/>
           </object>
           <packing>
             <property name="left-attach">1</property>
@@ -107,7 +106,6 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="halign">end</property>
-            <signal name="state-set" handler="on_showdate_change" swapped="no"/>
           </object>
           <packing>
             <property name="left-attach">1</property>
@@ -119,7 +117,6 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="halign">end</property>
-            <signal name="state-set" handler="on_lightopacity_change" swapped="no"/>
           </object>
           <packing>
             <property name="left-attach">1</property>
