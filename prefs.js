@@ -2,13 +2,12 @@
 
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
+const Gio = imports.gi.Gio;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 const log_this = Convenience.log_this;
-
-const UTCClockSettingsWidget = Me.imports.prefs_window.UTCClockSettingsWidget;
 
 function init() {
     log_this(`Initializing Preferences...`);
@@ -17,19 +16,23 @@ function init() {
 const UTCClockSettingsBox = new GObject.Class({
     Name: 'UTCClock.Prefs.UTCClockSettingsBox',
     GTypeName: 'UTCClockSettingsBox',
-    Extends: Gtk.Box,
+    Extends: Gtk.ScrolledWindow,
 
-    _init: function() {
-        this.parent();
+    _init: function (params) {
+        this.parent(params);
 
-        let box_outer = new Gtk.Box({
-            orientation: Gtk.Orientation.VERTICAL,
-            spacing: 60
-        });
-        this.add(box_outer);
+        this._settings = Convenience.getSettings();
 
-        let widget = new UTCClockSettingsWidget();
-        box_outer.pack_start(widget, true, true, 0);
+        let builder = new Gtk.Builder();
+        builder.set_translation_domain('gettext-domain');
+        builder.add_from_file(Me.path + '/prefs.ui');
+
+        this.add(builder.get_object('main_prefs'));
+
+        this._settings.bind('show-seconds', builder.get_object('widget1'), 'active', Gio.SettingsBindFlags.DEFAULT);
+        this._settings.bind('time-text', builder.get_object('widget2'), 'active-id', Gio.SettingsBindFlags.DEFAULT);
+        this._settings.bind('show-date', builder.get_object('widget3'), 'active', Gio.SettingsBindFlags.DEFAULT);
+        this._settings.bind('light-opacity', builder.get_object('widget4'), 'active', Gio.SettingsBindFlags.DEFAULT);
     }
 
 });
