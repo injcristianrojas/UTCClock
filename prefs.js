@@ -39,7 +39,8 @@ const UTCClockSettingsBox = new GObject.Class({
 });
 
 function buildPrefsWidget() {
-    const box = new UTCClockSettingsBox();
-    box.show_all();
+    let box = new UTCClockSettingsBox();
+    if (!isGnome40)
+        box.show_all();
     return box;
 }
