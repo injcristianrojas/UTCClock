@@ -19,6 +19,9 @@ let settings;
 
 let signals = [];
 
+let isGnome40 = parseInt(Config.PACKAGE_VERSION.split('.')[0]) >= 40;
+let shellMinorVersion36 = parseInt(Config.PACKAGE_VERSION.split('.')[1]) < 36;
+
 let format_params = {
     hour: '2-digit',
     minute: '2-digit',
@@ -26,7 +29,6 @@ let format_params = {
 }
 let time_text = 'UTC';
 
-let shellMinorVersion = parseInt(Config.PACKAGE_VERSION.split('.')[1]);
 
 function init() {
     settings = Convenience.getSettings();
@@ -38,7 +40,7 @@ function init() {
         can_focus: false,
         x_expand: true,
         y_expand: false,
-        y_align: shellMinorVersion < 36 ? St.Align.MIDDLE : St.Align.END,
+        y_align: shellMinorVersion36 ? St.Align.MIDDLE : St.Align.END,
         track_hover: true
     });
 
