@@ -1,0 +1,1 @@
+Use `journalctl -f /usr/bin/gnome-shell` for debugging.
