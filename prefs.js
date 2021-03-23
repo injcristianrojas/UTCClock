@@ -28,7 +28,10 @@ const UTCClockSettingsBox = new GObject.Class({
         builder.set_translation_domain('gettext-domain');
         builder.add_from_file(Me.path + (isGnome40 ? '/prefs40.ui' : '/prefs.ui'));
 
-        this.set_child(builder.get_object('main_prefs'));
+        if (isGnome40)
+            this.set_child(builder.get_object('main_prefs'));
+        else
+            this.add(builder.get_object('main_prefs'));
 
         this._settings.bind('show-seconds', builder.get_object('widget1'), 'active', Gio.SettingsBindFlags.DEFAULT);
         this._settings.bind('time-text', builder.get_object('widget2'), 'active-id', Gio.SettingsBindFlags.DEFAULT);

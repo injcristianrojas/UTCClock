@@ -42,7 +42,7 @@ function init() {
         x_expand: true,
         y_expand: false,
         y_align: !isGnome40 && shellMinorVersion36 ? St.Align.MIDDLE : St.Align.END,
-        track_hover: true
+        track_hover: !isGnome40
     });
 
     label = new St.Label({
