@@ -41,7 +41,7 @@ function init() {
         can_focus: false,
         x_expand: true,
         y_expand: false,
-        y_align: shellMinorVersion36 ? St.Align.MIDDLE : St.Align.END,
+        y_align: !isGnome40 && shellMinorVersion36 ? St.Align.MIDDLE : St.Align.END,
         track_hover: true
     });
 
