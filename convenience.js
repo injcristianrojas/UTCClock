@@ -94,6 +94,13 @@ function getSettings(schema) {
     return new Gio.Settings({ settings_schema: schemaObj });
 }
 
+function get_clock_seconds_settings() {
+    // TODO implement disabling and falsing of "show seconds" if this is false.
+    // Use builder.get_object('widget1') for access.
+    let seconds_settings = getSettings('org.gnome.desktop.interface');
+    return seconds_settings.get_boolean('clock-show-seconds');
+}
+
 function log_this(string) {
     log(`[${Me.metadata.name}-${Me.metadata.version}] ${string}`)
 }

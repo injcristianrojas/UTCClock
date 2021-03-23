@@ -7,7 +7,6 @@ const Lang = imports.lang;
 const Shell = imports.gi.Shell;
 const Util = imports.misc.util;
 const Config = imports.misc.config;
-const Gio = imports.gi.Gio;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -55,6 +54,7 @@ function init() {
 
 function enable() {
     log_this(`enabling...`);
+    log_this(Convenience.get_clock_seconds_settings());
 
     signals[0] = settings.connect('changed::show-seconds', Lang.bind(this, setSecondsDisplayed));
     signals[1] = settings.connect('changed::time-text', Lang.bind(this, setTimeText));
