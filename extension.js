@@ -7,6 +7,7 @@ const Lang = imports.lang;
 const Shell = imports.gi.Shell;
 const Util = imports.misc.util;
 const Config = imports.misc.config;
+const Gio = imports.gi.Gio;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -50,7 +51,6 @@ function init() {
     });
     
     button.set_child(label);
-    log_this(Config.PACKAGE_VERSION);
 }
 
 function enable() {
