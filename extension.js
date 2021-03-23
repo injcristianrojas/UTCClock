@@ -60,8 +60,9 @@ function enable() {
     signals[1] = settings.connect('changed::time-text', Lang.bind(this, setTimeText));
     signals[2] = settings.connect('changed::show-date', Lang.bind(this, setDateDisplayed));
     signals[3] = settings.connect('changed::light-opacity', Lang.bind(this, setLightOpacity));
-
+    
     signals[4] = button.connect('button-press-event', showMenu);
+
     setSecondsDisplayed();
     setTimeText();
     setDateDisplayed();
