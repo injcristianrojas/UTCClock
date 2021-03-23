@@ -60,7 +60,7 @@ function enable() {
     signals[1] = settings.connect('changed::time-text', Lang.bind(this, setTimeText));
     signals[2] = settings.connect('changed::show-date', Lang.bind(this, setDateDisplayed));
     signals[3] = settings.connect('changed::light-opacity', Lang.bind(this, setLightOpacity));
-    
+
     signals[4] = button.connect('button-press-event', showMenu);
 
     setSecondsDisplayed();
@@ -69,8 +69,11 @@ function enable() {
     setLightOpacity();
 
     update_time();
+
     signals[5] = clock.connect('notify::clock', Lang.bind(this, this.update_time));
+
     Main.panel._centerBox.insert_child_at_index(button, 1);
+    
     log_this(`enabled.`);
 }
 
