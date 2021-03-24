@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkListStore" id="liststore1">
-    <columns>
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0">UTC</col>
-      </row>
-      <row>
-        <col id="0">GMT</col>
-      </row>
-      <row>
-        <col id="0">Z</col>
-      </row>
-    </data>
-  </object>
   <object class="GtkBox" id="main_prefs">
     <property name="can-focus">0</property>
     <property name="margin-start">12</property>
