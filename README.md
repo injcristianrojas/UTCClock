@@ -18,3 +18,7 @@ git clone https://github.com/injcristianrojas/UTCClock.git
 cd UTCClock
 make install
 ```
+
+Depending if you have Wayland or not, you will have to log out and then log back in.
+
+This method is good if you don't want to wait for GNOME Extensions approval.
