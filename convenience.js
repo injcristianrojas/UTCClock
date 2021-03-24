@@ -95,8 +95,6 @@ function getSettings(schema) {
 }
 
 function getClockSecondsSettings() {
-    // TODO implement disabling and falsing of "show seconds" if this is false.
-    // Use builder.get_object('widget1') for access.
     let seconds_settings = getSettings('org.gnome.desktop.interface');
     return seconds_settings.get_boolean('clock-show-seconds');
 }
