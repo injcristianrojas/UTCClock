@@ -31,8 +31,8 @@ const Config = imports.misc.config;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 
-const version_data = Config.PACKAGE_VERSION.split('.');
-const isGnome40 = parseInt(version_data[0]) >= 40;
+var version_data = Config.PACKAGE_VERSION.split('.');
+var isGnome40 = parseInt(version_data[0]) >= 40;
 
 /**
  * initTranslations:
@@ -94,7 +94,7 @@ function getSettings(schema) {
     return new Gio.Settings({ settings_schema: schemaObj });
 }
 
-function get_clock_seconds_settings() {
+function getClockSecondsSettings() {
     // TODO implement disabling and falsing of "show seconds" if this is false.
     // Use builder.get_object('widget1') for access.
     let seconds_settings = getSettings('org.gnome.desktop.interface');

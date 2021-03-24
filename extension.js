@@ -14,6 +14,7 @@ const Convenience = Me.imports.convenience;
 
 const log_this = Convenience.log_this;
 const version_data = Convenience.version_data;
+const getClockSecondsSettings = Convenience.getClockSecondsSettings;
 const isGnome40 = Convenience.isGnome40;
 
 let text, button, label;
@@ -54,7 +55,6 @@ function init() {
 
 function enable() {
     log_this(`enabling...`);
-    log_this(Convenience.get_clock_seconds_settings());
 
     signals[0] = settings.connect('changed::show-seconds', Lang.bind(this, setSecondsDisplayed));
     signals[1] = settings.connect('changed::time-text', Lang.bind(this, setTimeText));
@@ -98,6 +98,8 @@ function update_time() {
 }
 
 function setSecondsDisplayed() {
+    if (!getClockSecondsSettings())
+        settings.set_boolean('show-seconds', false);
     let secondsDisplayed = settings.get_boolean('show-seconds');
     if (secondsDisplayed) {
         format_params['second'] = '2-digit';
