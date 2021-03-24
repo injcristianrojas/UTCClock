@@ -7,6 +7,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 const log_this = Convenience.log_this;
 
+const getClockSecondsSettings = Convenience.getClockSecondsSettings;
 const version_data = Convenience.version_data;
 const isGnome40 = Convenience.isGnome40;
 
@@ -33,7 +34,12 @@ const UTCClockSettingsBox = new GObject.Class({
         else
             this.add(builder.get_object('main_prefs'));
 
-        this._settings.bind('show-seconds', builder.get_object('widget1'), 'active', Gio.SettingsBindFlags.DEFAULT);
+        if (getClockSecondsSettings())
+            this._settings.bind('show-seconds', builder.get_object('widget1'), 'active', Gio.SettingsBindFlags.DEFAULT);
+        else {
+            builder.get_object('widget1').set_sensitive(false);
+            builder.get_object('widget1').set_tooltip_text('Disabled. Go to GNOME Tweaks and enable Seconds in the "Top Bar" section to enable.');
+        }
         this._settings.bind('time-text', builder.get_object('widget2'), 'active-id', Gio.SettingsBindFlags.DEFAULT);
         this._settings.bind('show-date', builder.get_object('widget3'), 'active', Gio.SettingsBindFlags.DEFAULT);
         this._settings.bind('light-opacity', builder.get_object('widget4'), 'active', Gio.SettingsBindFlags.DEFAULT);
