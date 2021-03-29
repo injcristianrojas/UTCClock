@@ -63,6 +63,9 @@ function enable() {
 
     signals[4] = button.connect('button-press-event', showMenu);
 
+    if (!getClockSecondsSettings())
+        settings.set_boolean('show-seconds', false);
+
     setSecondsDisplayed();
     setTimeText();
     setDateDisplayed();
@@ -98,8 +101,6 @@ function update_time() {
 }
 
 function setSecondsDisplayed() {
-    if (!getClockSecondsSettings())
-        settings.set_boolean('show-seconds', false);
     let secondsDisplayed = settings.get_boolean('show-seconds');
     if (secondsDisplayed) {
         format_params['second'] = '2-digit';
