@@ -38,6 +38,7 @@ const UTCClockSettingsBox = new GObject.Class({
             this._settings.bind('show-seconds', builder.get_object('widget1'), 'active', Gio.SettingsBindFlags.DEFAULT);
             builder.get_object('image1').icon_name = null;
         } else {
+            this._settings.set_boolean('show-seconds', false);
             builder.get_object('widget1').set_sensitive(false);
             builder.get_object('image1').icon_name = 'dialog-warning-symbolic';
             builder.get_object('image1').set_tooltip_text('Disabled. Go to GNOME Tweaks and enable Seconds in the "Top Bar" section to enable.');
@@ -45,6 +46,7 @@ const UTCClockSettingsBox = new GObject.Class({
         this._settings.bind('time-text', builder.get_object('widget2'), 'active-id', Gio.SettingsBindFlags.DEFAULT);
         this._settings.bind('show-date', builder.get_object('widget3'), 'active', Gio.SettingsBindFlags.DEFAULT);
         this._settings.bind('light-opacity', builder.get_object('widget4'), 'active', Gio.SettingsBindFlags.DEFAULT);
+        
     }
 
 });
