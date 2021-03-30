@@ -94,11 +94,6 @@ function getSettings(schema) {
     return new Gio.Settings({ settings_schema: schemaObj });
 }
 
-function getClockSecondsSettings() {
-    let seconds_settings = getSettings('org.gnome.desktop.interface');
-    return seconds_settings.get_boolean('clock-show-seconds');
-}
-
 function log_this(string) {
     log(`[${Me.metadata.name}-${Me.metadata.version}] ${string}`)
 }

@@ -19,7 +19,7 @@ const isGnome40 = Convenience.isGnome40;
 
 let text, button, label;
 let clock, clock_signal_id;
-let settings;
+let settings, seconds_settings;
 
 let signals = [];
 
@@ -34,6 +34,7 @@ let time_text = 'UTC';
 
 function init() {
     settings = Convenience.getSettings();
+    seconds_settings = Convenience.getSettings('org.gnome.desktop.interface');
 
     clock = new GnomeDesktop.WallClock();
     button = new St.Bin({
@@ -60,22 +61,21 @@ function enable() {
     signals[1] = settings.connect('changed::time-text', Lang.bind(this, setTimeText));
     signals[2] = settings.connect('changed::show-date', Lang.bind(this, setDateDisplayed));
     signals[3] = settings.connect('changed::light-opacity', Lang.bind(this, setLightOpacity));
-
+    
     signals[4] = button.connect('button-press-event', showMenu);
-
-    if (!getClockSecondsSettings())
-        settings.set_boolean('show-seconds', false);
-
+    
     setSecondsDisplayed();
     setTimeText();
     setDateDisplayed();
     setLightOpacity();
-
+    
     update_time();
-
+    
     signals[5] = clock.connect('notify::clock', Lang.bind(this, this.update_time));
-
+    
     Main.panel._centerBox.insert_child_at_index(button, 1);
+    
+    signals[6] = seconds_settings.connect('changed::clock-show-seconds', Lang.bind(this, setSecondsEnabledGNOME));
     
     log_this(`enabled.`);
 }
@@ -139,4 +139,13 @@ function showMenu() {
         "gnome-shell-extension-prefs",
         Me.uuid
     ]);
+}
+
+function setGNOMESecondsEnabled() {
+    settings.set_boolean(
+        'show-seconds',
+        seconds_settings.get_boolean('clock-show-seconds') &&
+        settings.get_boolean('show-seconds')
+    );
+    log_this('BINDING WORKS');
 }
