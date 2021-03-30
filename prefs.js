@@ -52,7 +52,7 @@ const UTCClockSettingsBox = GObject.registerClass(
 );
 
 function init() {
-    ExtensionUtils.initTranslations('gnome-shell-extensions-extensions');
+    
 }
 
 function buildPrefsWidget() {
