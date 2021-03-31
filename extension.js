@@ -73,9 +73,9 @@ function enable() {
     
     signals[5] = clock.connect('notify::clock', Lang.bind(this, this.update_time));
     
-    Main.panel._centerBox.insert_child_at_index(button, 1);
+    Main.panel._centerBox.insert_child_at_index(button, 2);
     
-    signals[6] = seconds_settings.connect('changed::clock-show-seconds', Lang.bind(this, setSecondsEnabledGNOME));
+    signals[6] = seconds_settings.connect('changed::clock-show-seconds', Lang.bind(this, setGNOMESecondsEnabled));
     
     log_this(`enabled.`);
 }
