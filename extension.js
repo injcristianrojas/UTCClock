@@ -7,14 +7,9 @@ const Lang = imports.lang;
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const St = imports.gi.St;
-
-let format_params = {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false
-}
-
-let time_text = "UTC";
+const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
+const Convenience = Me.imports.convenience;
 
 let UTCClock = GObject.registerClass(
     class UTCCLock extends PanelMenu.Button {
@@ -23,19 +18,19 @@ let UTCClock = GObject.registerClass(
             super._init(0, 'UTCClock', false);
 
             // Label
-            this._timeText = new St.Label({
+            this.timeText = new St.Label({
                 y_align: Clutter.ActorAlign.CENTER,
                 text: "..."
             });
 
             let topBox = new St.BoxLayout();
-            topBox.add_actor(this._timeText);
+            topBox.add_actor(this.timeText);
             this.add_actor(topBox);
 
             this.enable();
         }
 
-        update_time() {
+        updateTime() {
             let now = new Date();
             let utc = new Date(
                 now.getUTCFullYear(),
@@ -45,25 +40,99 @@ let UTCClock = GObject.registerClass(
                 now.getUTCMinutes(),
                 now.getUTCSeconds()
             );
-            this._timeText.set_text(
+            this.timeText.set_text(
                 new Intl.DateTimeFormat(
-                    "default", format_params
-                ).format(utc) + " " + time_text
+                    "default", this.format_params
+                ).format(utc) + " " + this.time_text
             );
         }
 
+        setSecondsDisplayed() {
+            let secondsDisplayed = this.settings.get_boolean("show-seconds");
+            if (secondsDisplayed) {
+                this.format_params["second"] = "2-digit";
+            } else {
+                delete this.format_params["second"];
+            }
+            this.updateTime();
+        }
+
+        setTimeText() {
+            this.time_text = this.settings.get_string("time-text");
+            this.updateTime();
+        }
+
+        setDateDisplayed() {
+            let dateDisplayed = this.settings.get_boolean("show-date");
+            if (dateDisplayed) {
+                this.format_params["weekday"] = "short";
+                this.format_params["month"] = "short";
+                this.format_params["day"] = "numeric";
+            } else {
+                delete this.format_params["weekday"];
+                delete this.format_params["month"];
+                delete this.format_params["day"];
+            }
+            this.updateTime();
+        }
+
+        setLightOpacity() {
+            this.timeText.opacity =
+                this.settings.get_boolean("light-opacity") ? 255 : 200;
+            this.updateTime();
+        }
+
         enable() {
+            this.time_text = "UTC";
+
+            this.format_params = {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            }
+
+            this.settings = Convenience.getSettings();
+            
             this.signals = [];
+
             this.clock = new GnomeDesktop.WallClock();
             this.signals[0] = this.clock.connect(
                 "notify::clock",
-                Lang.bind(this, this.update_time)
+                Lang.bind(this, this.updateTime)
             );
-            
+
+            this.setSecondsDisplayed();
+            this.signals[1] = this.settings.connect(
+                "changed::show-seconds",
+                Lang.bind(this, this.setSecondsDisplayed)
+            );
+
+            this.setTimeText();
+            this.signals[2] = this.settings.connect(
+                "changed::time-text",
+                Lang.bind(this, this.setTimeText)
+            );
+
+            this.setDateDisplayed();
+            this.signals[3] = this.settings.connect(
+                "changed::show-date",
+                Lang.bind(this, this.setDateDisplayed)
+            );
+
+            this.setLightOpacity();
+            this.signals[4] = this.settings.connect(
+                "changed::light-opacity",
+                Lang.bind(this, this.setLightOpacity)
+            );
+
         }
 
         disable() {
             this.clock.disconnect(this.signals[0]);
+            this.settings.disconnect(this.signals[1]);
+            this.settings.disconnect(this.signals[2]);
+            this.settings.disconnect(this.signals[3]);
+            this.settings.disconnect(this.signals[4]);
         }
 
 
