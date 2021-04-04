@@ -11,6 +11,9 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 
+const version_data = Convenience.version_data;
+const modernGNOME = parseInt(version_data[1]) >= 32;
+
 let UTCClock = GObject.registerClass(
     class UTCCLock extends PanelMenu.Button {
 
@@ -92,7 +95,7 @@ let UTCClock = GObject.registerClass(
             }
 
             this.settings = Convenience.getSettings();
-            
+
             this.signals = [];
 
             this.clock = new GnomeDesktop.WallClock();
@@ -146,8 +149,10 @@ function init() {
 }
 
 function enable() {
-    utcclock = new UTCClock();
-    Main.panel._addToPanelBox('utcclock', utcclock, 1, Main.panel._centerBox);
+    if (modernGNOME) {
+        utcclock = new UTCClock();
+        Main.panel._addToPanelBox('utcclock', utcclock, 1, Main.panel._centerBox);
+    }
 }
 
 function disable() {
