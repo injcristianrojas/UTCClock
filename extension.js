@@ -149,10 +149,8 @@ function init() {
 }
 
 function enable() {
-    if (modernGNOME) {
-        utcclock = new UTCClock();
-        Main.panel._addToPanelBox('utcclock', utcclock, 1, Main.panel._centerBox);
-    }
+    utcclock = new UTCClock();
+    Main.panel._addToPanelBox('utcclock', utcclock, 1, Main.panel._centerBox);
 }
 
 function disable() {
