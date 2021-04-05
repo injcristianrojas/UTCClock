@@ -197,6 +197,8 @@ let UTCClock = GObject.registerClass(
                 Lang.bind(this, this.updateTime)
             );
 
+            if (!this.gnomeSecondsSettings.get_boolean("clock-show-seconds"))
+                this.settings.set_boolean("show-seconds", false);
             this.setSecondsDisplayed();
             this.settingsSignals[0] = this.settings.connect(
                 "changed::show-seconds",
