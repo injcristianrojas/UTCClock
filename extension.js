@@ -10,6 +10,7 @@ const St = imports.gi.St;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
+const PopupMenu = imports.ui.popupMenu;
 
 const version_data = Convenience.version_data;
 const modernGNOME = parseInt(version_data[1]) >= 32;
@@ -18,7 +19,7 @@ let UTCClock = GObject.registerClass(
     class UTCCLock extends PanelMenu.Button {
 
         _init() {
-            super._init(0, 'UTCClock', false);
+            super._init(0, "UTCClock", false);
 
             // Label
             this.timeText = new St.Label({
@@ -85,6 +86,47 @@ let UTCClock = GObject.registerClass(
             this.updateTime();
         }
 
+        buildMenu() {
+            this.ClockMenuItem1Seconds = new PopupMenu.PopupSwitchMenuItem(
+                "Show seconds",
+                this.settings.get_boolean("show-seconds"),
+                { 
+                    reactive: true
+                }
+            );
+            this.menu.addMenuItem(this.ClockMenuItem1Seconds);
+            this.ClockMenuItemText = new PopupMenu.PopupSubMenuMenuItem(
+                "Time text to show",
+                true
+            );
+            this.ClockMenuItemText.menu.addMenuItem(
+                new PopupMenu.PopupMenuItem("UTC")
+            );
+            this.ClockMenuItemText.menu.addMenuItem(
+                new PopupMenu.PopupMenuItem("GMT")
+            );
+            this.ClockMenuItemText.menu.addMenuItem(
+                new PopupMenu.PopupMenuItem("Z")
+            );
+            this.menu.addMenuItem(this.ClockMenuItemText);
+            this.ClockMenuItemDate = new PopupMenu.PopupSwitchMenuItem(
+                "Show date",
+                this.settings.get_boolean("show-date"),
+                { 
+                    reactive: true
+                }
+            );
+            this.menu.addMenuItem(this.ClockMenuItemDate);
+            this.ClockMenuItemOpacity = new PopupMenu.PopupSwitchMenuItem(
+                "Light opacity",
+                this.settings.get_boolean("light-opacity"),
+                { 
+                    reactive: true
+                }
+            );
+            this.menu.addMenuItem(this.ClockMenuItemOpacity);
+        }
+
         enable() {
             this.time_text = "UTC";
 
@@ -128,6 +170,7 @@ let UTCClock = GObject.registerClass(
                 Lang.bind(this, this.setLightOpacity)
             );
 
+            this.buildMenu();
         }
 
         disable() {
@@ -150,7 +193,7 @@ function init() {
 
 function enable() {
     utcclock = new UTCClock();
-    Main.panel._addToPanelBox('utcclock', utcclock, 1, Main.panel._centerBox);
+    Main.panel._addToPanelBox("utcclock", utcclock, 1, Main.panel._centerBox);
 }
 
 function disable() {
