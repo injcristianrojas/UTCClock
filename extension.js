@@ -98,6 +98,9 @@ let UTCClock = GObject.registerClass(
                     }
                 )
             );
+            this.ClockMenuItemSeconds.connect('open-state-changed', Lang.bind(this, function(){
+                log('Menu opened');
+            }));
             this.menu.addMenuItem(this.ClockMenuItemSeconds);
 
             this.ClockMenuItemText = new PopupMenu.PopupSubMenuMenuItem(
