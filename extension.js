@@ -1,7 +1,6 @@
 "use strict";
 
 const Clutter = imports.gi.Clutter;
-const Convenience = Me.imports.convenience;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Gio = imports.gi.Gio;
 const GnomeDesktop = imports.gi.GnomeDesktop;
@@ -12,6 +11,8 @@ const Me = ExtensionUtils.getCurrentExtension();
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const St = imports.gi.St;
+
+const Convenience = Me.imports.convenience;
 
 let UTCClock = GObject.registerClass(
     class UTCCLock extends PanelMenu.Button {
@@ -153,7 +154,12 @@ let UTCClock = GObject.registerClass(
                 "button-press-event",
                 Lang.bind(
                     this, function() {
-                        this.ClockMenuItemSeconds.set_reactive(this.gnomeSecondsSettings.get_boolean("clock-show-seconds"));
+                        if (this.gnomeSecondsSettings.get_boolean("clock-show-seconds"))
+                            this.ClockMenuItemSeconds.set_reactive(true);
+                        else {
+                            this.ClockMenuItemSeconds._switch.state = false;
+                            this.ClockMenuItemSeconds.set_reactive(false);
+                        }
                     }
                 )
             );
