@@ -151,7 +151,7 @@ let UTCClock = GObject.registerClass(
             );
             this.menu.addMenuItem(this.ClockMenuItemOpacity);
             this.connect(
-                "active",
+                "button-press-event",
                 Lang.bind(
                     this, function() {
                         log("Holi");
@@ -171,34 +171,34 @@ let UTCClock = GObject.registerClass(
 
             this.settings = Convenience.getSettings();
 
-            this.signals = [];
+            this.settingsSignals = [];
 
             this.clock = new GnomeDesktop.WallClock();
-            this.signals[0] = this.clock.connect(
+            this.clocksignal = this.clock.connect(
                 "notify::clock",
                 Lang.bind(this, this.updateTime)
             );
 
             this.setSecondsDisplayed();
-            this.signals[1] = this.settings.connect(
+            this.settingsSignals[0] = this.settings.connect(
                 "changed::show-seconds",
                 Lang.bind(this, this.setSecondsDisplayed)
             );
 
             this.setTimeText();
-            this.signals[2] = this.settings.connect(
+            this.settingsSignals[1] = this.settings.connect(
                 "changed::time-text",
                 Lang.bind(this, this.setTimeText)
             );
 
             this.setDateDisplayed();
-            this.signals[3] = this.settings.connect(
+            this.settingsSignals[2] = this.settings.connect(
                 "changed::show-date",
                 Lang.bind(this, this.setDateDisplayed)
             );
 
             this.setLightOpacity();
-            this.signals[4] = this.settings.connect(
+            this.settingsSignals[3] = this.settings.connect(
                 "changed::light-opacity",
                 Lang.bind(this, this.setLightOpacity)
             );
@@ -207,11 +207,12 @@ let UTCClock = GObject.registerClass(
         }
 
         disable() {
-            this.clock.disconnect(this.signals[0]);
-            this.settings.disconnect(this.signals[1]);
-            this.settings.disconnect(this.signals[2]);
-            this.settings.disconnect(this.signals[3]);
-            this.settings.disconnect(this.signals[4]);
+            // TODO disconnect menu signals
+            this.clock.disconnect(this.clocksignal);
+            this.settings.disconnect(this.settingsSignals[0]);
+            this.settings.disconnect(this.settingsSignals[1]);
+            this.settings.disconnect(this.settingsSignals[2]);
+            this.settings.disconnect(this.settingsSignals[3]);
         }
     }
 );
