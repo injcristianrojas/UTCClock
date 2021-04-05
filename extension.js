@@ -1,17 +1,17 @@
 "use strict";
 
 const Clutter = imports.gi.Clutter;
+const Convenience = Me.imports.convenience;
+const ExtensionUtils = imports.misc.extensionUtils;
+const Gio = imports.gi.Gio;
 const GnomeDesktop = imports.gi.GnomeDesktop;
 const GObject = imports.gi.GObject;
 const Lang = imports.lang;
 const Main = imports.ui.main;
-const PanelMenu = imports.ui.panelMenu;
-const St = imports.gi.St;
-const ExtensionUtils = imports.misc.extensionUtils;
-const Gio = imports.gi.Gio;
 const Me = ExtensionUtils.getCurrentExtension();
-const Convenience = Me.imports.convenience;
+const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
+const St = imports.gi.St;
 
 let UTCClock = GObject.registerClass(
     class UTCCLock extends PanelMenu.Button {
