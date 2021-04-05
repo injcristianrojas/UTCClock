@@ -98,9 +98,6 @@ let UTCClock = GObject.registerClass(
                     }
                 )
             );
-            this.ClockMenuItemSeconds.connect('open-state-changed', Lang.bind(this, function(){
-                log('Menu opened');
-            }));
             this.menu.addMenuItem(this.ClockMenuItemSeconds);
 
             this.ClockMenuItemText = new PopupMenu.PopupSubMenuMenuItem(
@@ -108,17 +105,17 @@ let UTCClock = GObject.registerClass(
                 true
             );
             const PopupMenuItemUTC = new PopupMenu.PopupMenuItem("UTC");
-            PopupMenuItemUTC.connect('activate', Lang.bind(this, function(){
+            PopupMenuItemUTC.connect('activate', Lang.bind(this, function() {
                 this.settings.set_string("time-text", "UTC");
             }));
             this.ClockMenuItemText.menu.addMenuItem(PopupMenuItemUTC);
             const PopupMenuItemGMT = new PopupMenu.PopupMenuItem("GMT");
-            PopupMenuItemGMT.connect('activate', Lang.bind(this, function(){
+            PopupMenuItemGMT.connect('activate', Lang.bind(this, function() {
                 this.settings.set_string("time-text", "GMT");
             }));
             this.ClockMenuItemText.menu.addMenuItem(PopupMenuItemGMT);
             const PopupMenuItemZ = new PopupMenu.PopupMenuItem("Z");
-            PopupMenuItemZ.connect('activate', Lang.bind(this, function(){
+            PopupMenuItemZ.connect('activate', Lang.bind(this, function() {
                 this.settings.set_string("time-text", "Z");
             }));
             this.ClockMenuItemText.menu.addMenuItem(PopupMenuItemZ);
@@ -153,6 +150,14 @@ let UTCClock = GObject.registerClass(
                 )
             );
             this.menu.addMenuItem(this.ClockMenuItemOpacity);
+            this.connect(
+                "active",
+                Lang.bind(
+                    this, function() {
+                        log("Holi");
+                    }
+                )
+            );
         }
 
         enable() {
