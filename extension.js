@@ -80,7 +80,7 @@ let UTCClock = GObject.registerClass(
 
         setLightOpacity() {
             this.timeText.opacity =
-                this.settings.get_boolean("light-opacity") ? 255 : 200;
+                this.settings.get_boolean("light-opacity") ? 200 : 255;
             this.updateTime();
         }
 
@@ -90,7 +90,7 @@ let UTCClock = GObject.registerClass(
                 this.settings.get_boolean("show-seconds"),
                 { reactive: true }
             );
-            this.ClockMenuItemSeconds.connect(
+            this.menuSignal1 = this.ClockMenuItemSeconds.connect(
                 "toggled",
                 Lang.bind(
                     this, function(object, value) {
@@ -101,24 +101,23 @@ let UTCClock = GObject.registerClass(
             this.menu.addMenuItem(this.ClockMenuItemSeconds);
 
             this.ClockMenuItemText = new PopupMenu.PopupSubMenuMenuItem(
-                "Time text to show",
-                true
+                "Time text to show"
             );
-            const PopupMenuItemUTC = new PopupMenu.PopupMenuItem("UTC");
-            PopupMenuItemUTC.connect('activate', Lang.bind(this, function() {
+            this.PopupMenuItemUTC = new PopupMenu.PopupMenuItem("UTC");
+            this.menuSignal2 = this.PopupMenuItemUTC.connect('activate', Lang.bind(this, function() {
                 this.settings.set_string("time-text", "UTC");
             }));
-            this.ClockMenuItemText.menu.addMenuItem(PopupMenuItemUTC);
-            const PopupMenuItemGMT = new PopupMenu.PopupMenuItem("GMT");
-            PopupMenuItemGMT.connect('activate', Lang.bind(this, function() {
+            this.ClockMenuItemText.menu.addMenuItem(this.PopupMenuItemUTC);
+            this.PopupMenuItemGMT = new PopupMenu.PopupMenuItem("GMT");
+            this.menuSignal3 = this.PopupMenuItemGMT.connect('activate', Lang.bind(this, function() {
                 this.settings.set_string("time-text", "GMT");
             }));
-            this.ClockMenuItemText.menu.addMenuItem(PopupMenuItemGMT);
-            const PopupMenuItemZ = new PopupMenu.PopupMenuItem("Z");
-            PopupMenuItemZ.connect('activate', Lang.bind(this, function() {
+            this.ClockMenuItemText.menu.addMenuItem(this.PopupMenuItemGMT);
+            this.PopupMenuItemZ = new PopupMenu.PopupMenuItem("Z");
+            this.menuSignal4 = this.PopupMenuItemZ.connect('activate', Lang.bind(this, function() {
                 this.settings.set_string("time-text", "Z");
             }));
-            this.ClockMenuItemText.menu.addMenuItem(PopupMenuItemZ);
+            this.ClockMenuItemText.menu.addMenuItem(this.PopupMenuItemZ);
             this.menu.addMenuItem(this.ClockMenuItemText);
 
             this.ClockMenuItemDate = new PopupMenu.PopupSwitchMenuItem(
@@ -126,7 +125,7 @@ let UTCClock = GObject.registerClass(
                 this.settings.get_boolean("show-date"),
                 { reactive: true }
             );
-            this.ClockMenuItemDate.connect(
+            this.menuSignal5 = this.ClockMenuItemDate.connect(
                 "toggled",
                 Lang.bind(
                     this, function(object, value) {
@@ -141,7 +140,7 @@ let UTCClock = GObject.registerClass(
                 this.settings.get_boolean("light-opacity"),
                 { reactive: true }
             );
-            this.ClockMenuItemOpacity.connect(
+            this.menuSignal6 = this.ClockMenuItemOpacity.connect(
                 "toggled",
                 Lang.bind(
                     this, function(object, value) {
@@ -150,11 +149,11 @@ let UTCClock = GObject.registerClass(
                 )
             );
             this.menu.addMenuItem(this.ClockMenuItemOpacity);
-            this.connect(
+            this.menuSignal7 = this.connect(
                 "button-press-event",
                 Lang.bind(
                     this, function() {
-                        log("Holi");
+                        this.ClockMenuItemSeconds.set_reactive(this.gnomeSecondsSettings.get_boolean("clock-show-seconds"));
                     }
                 )
             );
@@ -170,6 +169,19 @@ let UTCClock = GObject.registerClass(
             }
 
             this.settings = Convenience.getSettings();
+            this.gnomeSecondsSettings = Convenience.getSettings(
+                "org.gnome.desktop.interface"
+            );
+
+            this.gnomeSecondsSignal =  this.gnomeSecondsSettings.connect(
+                "changed::clock-show-seconds",
+                Lang.bind(this, function() {
+                    if (!this.gnomeSecondsSettings.get_boolean("clock-show-seconds")) {
+                        this.settings.set_boolean("show-seconds", false);
+                        this.setSecondsDisplayed();
+                    }
+                })
+            );
 
             this.settingsSignals = [];
 
@@ -207,12 +219,19 @@ let UTCClock = GObject.registerClass(
         }
 
         disable() {
-            // TODO disconnect menu signals
             this.clock.disconnect(this.clocksignal);
+            this.gnomeSecondsSettings.disconnect(this.gnomeSecondsSignal);
             this.settings.disconnect(this.settingsSignals[0]);
             this.settings.disconnect(this.settingsSignals[1]);
             this.settings.disconnect(this.settingsSignals[2]);
             this.settings.disconnect(this.settingsSignals[3]);
+            this.ClockMenuItemSeconds.disconnect(this.menuSignal1);
+            this.PopupMenuItemUTC.disconnect(this.menuSignal2);
+            this.PopupMenuItemGMT.disconnect(this.menuSignal3);
+            this.PopupMenuItemZ.disconnect(this.menuSignal4);
+            this.ClockMenuItemDate.disconnect(this.menuSignal5);
+            this.ClockMenuItemOpacity.disconnect(this.menuSignal6);
+            this.disconnect(this.menuSignal7);
         }
     }
 );
