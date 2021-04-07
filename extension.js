@@ -1,150 +1,261 @@
 "use strict";
 
-const St = imports.gi.St;
-const Main = imports.ui.main;
-const GnomeDesktop = imports.gi.GnomeDesktop;
-const Lang = imports.lang;
-const Shell = imports.gi.Shell;
-const Util = imports.misc.util;
-const Config = imports.misc.config;
-
+const Clutter = imports.gi.Clutter;
 const ExtensionUtils = imports.misc.extensionUtils;
+const Gio = imports.gi.Gio;
+const GnomeDesktop = imports.gi.GnomeDesktop;
+const GObject = imports.gi.GObject;
+const Lang = imports.lang;
+const Main = imports.ui.main;
 const Me = ExtensionUtils.getCurrentExtension();
+const PanelMenu = imports.ui.panelMenu;
+const PopupMenu = imports.ui.popupMenu;
+const St = imports.gi.St;
+
 const Convenience = Me.imports.convenience;
 
-const log_this = Convenience.log_this;
-const version_data = Convenience.version_data;
-const getClockSecondsSettings = Convenience.getClockSecondsSettings;
-const isGnome40 = Convenience.isGnome40;
+let UTCClock = GObject.registerClass(
+    class UTCCLock extends PanelMenu.Button {
 
-let text, button, label;
-let clock, clock_signal_id;
-let settings, seconds_settings;
+        _init() {
+            super._init(0, "UTCClock", false);
 
-let signals = [];
+            // Label
+            this.timeText = new St.Label({
+                y_align: Clutter.ActorAlign.CENTER,
+                text: "..."
+            });
 
-let shellMinorVersion36 = parseInt(version_data[1]) < 36;
+            let topBox = new St.BoxLayout();
+            topBox.add_actor(this.timeText);
+            this.add_actor(topBox);
 
-let format_params = {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false
-}
-let time_text = "UTC";
+            this.enable();
+        }
+
+        updateTime() {
+            let now = new Date();
+            let utc = new Date(
+                now.getUTCFullYear(),
+                now.getUTCMonth(),
+                now.getUTCDate(),
+                now.getUTCHours(),
+                now.getUTCMinutes(),
+                now.getUTCSeconds()
+            );
+            this.timeText.set_text(
+                new Intl.DateTimeFormat(
+                    "default", this.format_params
+                ).format(utc) + " " + this.time_text
+            );
+        }
+
+        setSecondsDisplayed() {
+            let secondsDisplayed = this.settings.get_boolean("show-seconds");
+            if (secondsDisplayed) {
+                this.format_params["second"] = "2-digit";
+            } else {
+                delete this.format_params["second"];
+            }
+            this.updateTime();
+        }
+
+        setTimeText() {
+            this.time_text = this.settings.get_string("time-text");
+            this.updateTime();
+        }
+
+        setDateDisplayed() {
+            let dateDisplayed = this.settings.get_boolean("show-date");
+            if (dateDisplayed) {
+                this.format_params["weekday"] = "short";
+                this.format_params["month"] = "short";
+                this.format_params["day"] = "numeric";
+            } else {
+                delete this.format_params["weekday"];
+                delete this.format_params["month"];
+                delete this.format_params["day"];
+            }
+            this.updateTime();
+        }
+
+        setLightOpacity() {
+            this.timeText.opacity =
+                this.settings.get_boolean("light-opacity") ? 200 : 255;
+            this.updateTime();
+        }
+
+        buildMenu() {
+            this.ClockMenuItemSeconds = new PopupMenu.PopupSwitchMenuItem(
+                "Show seconds",
+                this.settings.get_boolean("show-seconds"),
+                { reactive: true }
+            );
+            this.menuSignal1 = this.ClockMenuItemSeconds.connect(
+                "toggled",
+                Lang.bind(
+                    this, function(object, value) {
+                        this.settings.set_boolean("show-seconds", value);
+                    }
+                )
+            );
+            this.menu.addMenuItem(this.ClockMenuItemSeconds);
+
+            this.ClockMenuItemText = new PopupMenu.PopupSubMenuMenuItem(
+                "Time text to show"
+            );
+            this.PopupMenuItemUTC = new PopupMenu.PopupMenuItem("UTC");
+            this.menuSignal2 = this.PopupMenuItemUTC.connect('activate', Lang.bind(this, function() {
+                this.settings.set_string("time-text", "UTC");
+            }));
+            this.ClockMenuItemText.menu.addMenuItem(this.PopupMenuItemUTC);
+            this.PopupMenuItemGMT = new PopupMenu.PopupMenuItem("GMT");
+            this.menuSignal3 = this.PopupMenuItemGMT.connect('activate', Lang.bind(this, function() {
+                this.settings.set_string("time-text", "GMT");
+            }));
+            this.ClockMenuItemText.menu.addMenuItem(this.PopupMenuItemGMT);
+            this.PopupMenuItemZ = new PopupMenu.PopupMenuItem("Z");
+            this.menuSignal4 = this.PopupMenuItemZ.connect('activate', Lang.bind(this, function() {
+                this.settings.set_string("time-text", "Z");
+            }));
+            this.ClockMenuItemText.menu.addMenuItem(this.PopupMenuItemZ);
+            this.menu.addMenuItem(this.ClockMenuItemText);
+
+            this.ClockMenuItemDate = new PopupMenu.PopupSwitchMenuItem(
+                "Show date",
+                this.settings.get_boolean("show-date"),
+                { reactive: true }
+            );
+            this.menuSignal5 = this.ClockMenuItemDate.connect(
+                "toggled",
+                Lang.bind(
+                    this, function(object, value) {
+                        this.settings.set_boolean("show-date", value);
+                    }
+                )
+            );
+            this.menu.addMenuItem(this.ClockMenuItemDate);
+
+            this.ClockMenuItemOpacity = new PopupMenu.PopupSwitchMenuItem(
+                "Light opacity",
+                this.settings.get_boolean("light-opacity"),
+                { reactive: true }
+            );
+            this.menuSignal6 = this.ClockMenuItemOpacity.connect(
+                "toggled",
+                Lang.bind(
+                    this, function(object, value) {
+                        this.settings.set_boolean("light-opacity", value);
+                    }
+                )
+            );
+            this.menu.addMenuItem(this.ClockMenuItemOpacity);
+            this.menuSignal7 = this.connect(
+                "button-press-event",
+                Lang.bind(
+                    this, function() {
+                        if (this.gnomeSecondsSettings.get_boolean("clock-show-seconds"))
+                            this.ClockMenuItemSeconds.set_reactive(true);
+                        else {
+                            this.ClockMenuItemSeconds._switch.state = false;
+                            this.ClockMenuItemSeconds.set_reactive(false);
+                        }
+                    }
+                )
+            );
+        }
+
+        enable() {
+            this.time_text = "UTC";
+
+            this.format_params = {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            }
+
+            this.settings = Convenience.getSettings();
+            this.gnomeSecondsSettings = Convenience.getSettings(
+                "org.gnome.desktop.interface"
+            );
+
+            this.gnomeSecondsSignal =  this.gnomeSecondsSettings.connect(
+                "changed::clock-show-seconds",
+                Lang.bind(this, function() {
+                    if (!this.gnomeSecondsSettings.get_boolean("clock-show-seconds")) {
+                        this.settings.set_boolean("show-seconds", false);
+                        this.setSecondsDisplayed();
+                    }
+                })
+            );
+
+            this.settingsSignals = [];
+
+            this.clock = new GnomeDesktop.WallClock();
+            this.clocksignal = this.clock.connect(
+                "notify::clock",
+                Lang.bind(this, this.updateTime)
+            );
+
+            if (!this.gnomeSecondsSettings.get_boolean("clock-show-seconds"))
+                this.settings.set_boolean("show-seconds", false);
+            this.setSecondsDisplayed();
+            this.settingsSignals[0] = this.settings.connect(
+                "changed::show-seconds",
+                Lang.bind(this, this.setSecondsDisplayed)
+            );
+
+            this.setTimeText();
+            this.settingsSignals[1] = this.settings.connect(
+                "changed::time-text",
+                Lang.bind(this, this.setTimeText)
+            );
+
+            this.setDateDisplayed();
+            this.settingsSignals[2] = this.settings.connect(
+                "changed::show-date",
+                Lang.bind(this, this.setDateDisplayed)
+            );
+
+            this.setLightOpacity();
+            this.settingsSignals[3] = this.settings.connect(
+                "changed::light-opacity",
+                Lang.bind(this, this.setLightOpacity)
+            );
+
+            this.buildMenu();
+        }
+
+        disable() {
+            this.clock.disconnect(this.clocksignal);
+            this.gnomeSecondsSettings.disconnect(this.gnomeSecondsSignal);
+            this.settings.disconnect(this.settingsSignals[0]);
+            this.settings.disconnect(this.settingsSignals[1]);
+            this.settings.disconnect(this.settingsSignals[2]);
+            this.settings.disconnect(this.settingsSignals[3]);
+            this.ClockMenuItemSeconds.disconnect(this.menuSignal1);
+            this.PopupMenuItemUTC.disconnect(this.menuSignal2);
+            this.PopupMenuItemGMT.disconnect(this.menuSignal3);
+            this.PopupMenuItemZ.disconnect(this.menuSignal4);
+            this.ClockMenuItemDate.disconnect(this.menuSignal5);
+            this.ClockMenuItemOpacity.disconnect(this.menuSignal6);
+            this.disconnect(this.menuSignal7);
+        }
+    }
+);
+
+let utcclock;
 
 function init() {
-    settings = Convenience.getSettings();
-    seconds_settings = Convenience.getSettings("org.gnome.desktop.interface");
 
-    clock = new GnomeDesktop.WallClock();
-    button = new St.Bin({
-        style_class: "panel-button",
-        reactive: true,
-        can_focus: false,
-        x_expand: true,
-        y_expand: false,
-        y_align: !isGnome40 && shellMinorVersion36 ? St.Align.MIDDLE : St.Align.END,
-        track_hover: !isGnome40
-    });
-
-    label = new St.Label({
-        opacity: 200
-    });
-    
-    button.set_child(label);
 }
 
 function enable() {
-    log_this("enabling...");
-
-    signals[0] = settings.connect("changed::show-seconds", Lang.bind(this, setSecondsDisplayed));
-    signals[1] = settings.connect("changed::time-text", Lang.bind(this, setTimeText));
-    signals[2] = settings.connect("changed::show-date", Lang.bind(this, setDateDisplayed));
-    signals[3] = settings.connect("changed::light-opacity", Lang.bind(this, setLightOpacity));
-    
-    signals[4] = button.connect("button-press-event", showMenu);
-    
-    setSecondsDisplayed();
-    setTimeText();
-    setDateDisplayed();
-    setLightOpacity();
-    
-    update_time();
-    
-    signals[5] = clock.connect("notify::clock", Lang.bind(this, this.update_time));
-    
-    Main.panel._centerBox.insert_child_at_index(button, 1);
-    
-    signals[6] = seconds_settings.connect("changed::clock-show-seconds", Lang.bind(this, setGNOMESecondsEnabled));
-    
-    log_this("enabled.");
+    utcclock = new UTCClock();
+    Main.panel._addToPanelBox("utcclock", utcclock, 1, Main.panel._centerBox);
 }
 
 function disable() {
-    log_this("disabling...");
-
-    settings.disconnect(signals[0]);
-    settings.disconnect(signals[1]);
-    settings.disconnect(signals[2]);
-    settings.disconnect(signals[3]);
-    button.disconnect(signals[4]);
-
-    Main.panel._centerBox.remove_child(button);
-    clock.disconnect(signals[5]);
-    log_this("disabled.");
-}
-
-function update_time() {
-    var now = new Date();
-    var utc = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
-    label.set_text(new Intl.DateTimeFormat("default", format_params).format(utc) + " " + time_text);
-}
-
-function setSecondsDisplayed() {
-    let secondsDisplayed = settings.get_boolean("show-seconds");
-    if (secondsDisplayed) {
-        format_params["second"] = "2-digit";
-    } else {
-        delete format_params["second"];
-    }
-    update_time();
-}
-
-function setTimeText() {
-    time_text = settings.get_string("time-text");
-    update_time();
-}
-
-function setDateDisplayed() {
-    let dateDisplayed = settings.get_boolean("show-date");
-    if (dateDisplayed) {
-        format_params["weekday"] = "short";
-        format_params["month"] = "short";
-        format_params["day"] = "numeric";
-    } else {
-        delete format_params["weekday"];
-        delete format_params["month"];
-        delete format_params["day"];
-    }
-    update_time();
-}
-
-function setLightOpacity() {
-    label.opacity = settings.get_boolean("light-opacity") ? 255 : 200;
-    update_time();
-}
-
-function showMenu() {
-    Util.spawn([
-        "gnome-shell-extension-prefs",
-        Me.uuid
-    ]);
-}
-
-function setGNOMESecondsEnabled() {
-    settings.set_boolean(
-        "show-seconds",
-        seconds_settings.get_boolean("clock-show-seconds") &&
-        settings.get_boolean("show-seconds")
-    );
+    utcclock.disable();
+    utcclock.destroy();
 }
