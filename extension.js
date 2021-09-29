@@ -127,14 +127,9 @@ let UTCClock = GObject.registerClass(
                 this.settings.get_boolean('show-date'),
                 { reactive: true }
             );
-            this.menuSignal5 = this.ClockMenuItemDate.connect(
-                'toggled',
-                Lang.bind(
-                    this, function(object, value) {
-                        this.settings.set_boolean('show-date', value);
-                    }
-                )
-            );
+            this.menuSignal5 = this.ClockMenuItemDate.connect('toggled', (object, value) => {
+                this.settings.set_boolean('show-date', value);
+            });
             this.menu.addMenuItem(this.ClockMenuItemDate);
 
             this.ClockMenuItemOpacity = new PopupMenu.PopupSwitchMenuItem(
@@ -214,7 +209,7 @@ let UTCClock = GObject.registerClass(
             this.setDateDisplayed();
             this.settingsSignals[2] = this.settings.connect(
                 'changed::show-date',
-                Lang.bind(this, this.setDateDisplayed)
+                this.setDateDisplayed.bind(this)
             );
 
             this.setLightOpacity();
