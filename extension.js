@@ -92,14 +92,9 @@ let UTCClock = GObject.registerClass(
                 this.settings.get_boolean('show-seconds'),
                 { reactive: true }
             );
-            this.menuSignal1 = this.ClockMenuItemSeconds.connect(
-                'toggled',
-                Lang.bind(
-                    this, function(object, value) {
-                        this.settings.set_boolean('show-seconds', value);
-                    }
-                )
-            );
+            this.menuSignal1 = this.ClockMenuItemSeconds.connect('toggled', (object, value) => {
+                this.settings.set_boolean('show-seconds', value);
+            });
             this.menu.addMenuItem(this.ClockMenuItemSeconds);
 
             this.ClockMenuItemText = new PopupMenu.PopupSubMenuMenuItem(
@@ -141,19 +136,14 @@ let UTCClock = GObject.registerClass(
                 this.settings.set_boolean('light-opacity', value);
             });
             this.menu.addMenuItem(this.ClockMenuItemOpacity);
-            this.menuSignal7 = this.connect(
-                'button-press-event',
-                Lang.bind(
-                    this, function() {
-                        if (this.gnomeSecondsSettings.get_boolean('clock-show-seconds'))
-                            this.ClockMenuItemSeconds.set_reactive(true);
-                        else {
-                            this.ClockMenuItemSeconds._switch.state = false;
-                            this.ClockMenuItemSeconds.set_reactive(false);
-                        }
-                    }
-                )
-            );
+            this.menuSignal7 = this.connect('button-press-event', () => {
+                if (this.gnomeSecondsSettings.get_boolean('clock-show-seconds'))
+                    this.ClockMenuItemSeconds.set_reactive(true);
+                else {
+                    this.ClockMenuItemSeconds._switch.state = false;
+                    this.ClockMenuItemSeconds.set_reactive(false);
+                }
+            });
         }
 
         enable() {
@@ -170,15 +160,12 @@ let UTCClock = GObject.registerClass(
                 'org.gnome.desktop.interface'
             );
 
-            this.gnomeSecondsSignal =  this.gnomeSecondsSettings.connect(
-                'changed::clock-show-seconds',
-                Lang.bind(this, function() {
-                    if (!this.gnomeSecondsSettings.get_boolean('clock-show-seconds')) {
-                        this.settings.set_boolean('show-seconds', false);
-                        this.setSecondsDisplayed();
-                    }
-                })
-            );
+            this.gnomeSecondsSignal =  this.gnomeSecondsSettings.connect('changed::clock-show-seconds', () => {
+                if (!this.gnomeSecondsSettings.get_boolean('clock-show-seconds')) {
+                    this.settings.set_boolean('show-seconds', false);
+                    this.setSecondsDisplayed();
+                }
+            });
 
             this.settingsSignals = [];
 
@@ -193,7 +180,7 @@ let UTCClock = GObject.registerClass(
             this.setSecondsDisplayed();
             this.settingsSignals[0] = this.settings.connect(
                 'changed::show-seconds',
-                Lang.bind(this, this.setSecondsDisplayed)
+                this.setSecondsDisplayed.bind(this)
             );
 
             this.setTimeText();
