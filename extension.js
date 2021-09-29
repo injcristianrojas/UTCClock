@@ -137,14 +137,9 @@ let UTCClock = GObject.registerClass(
                 this.settings.get_boolean('light-opacity'),
                 { reactive: true }
             );
-            this.menuSignal6 = this.ClockMenuItemOpacity.connect(
-                'toggled',
-                Lang.bind(
-                    this, function(object, value) {
-                        this.settings.set_boolean('light-opacity', value);
-                    }
-                )
-            );
+            this.menuSignal6 = this.ClockMenuItemOpacity.connect('toggled', (object, value) => {
+                this.settings.set_boolean('light-opacity', value);
+            });
             this.menu.addMenuItem(this.ClockMenuItemOpacity);
             this.menuSignal7 = this.connect(
                 'button-press-event',
@@ -215,7 +210,7 @@ let UTCClock = GObject.registerClass(
             this.setLightOpacity();
             this.settingsSignals[3] = this.settings.connect(
                 'changed::light-opacity',
-                Lang.bind(this, this.setLightOpacity)
+                this.setLightOpacity.bind(this)
             );
 
             this.buildMenu();
