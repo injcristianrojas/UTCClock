@@ -31,9 +31,6 @@ const Config = imports.misc.config;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 
-var version_data = Config.PACKAGE_VERSION.split(".");
-var isGnome40 = parseInt(version_data[0]) >= 40;
-
 /**
  * initTranslations:
  * @domain: (optional): the gettext domain to use
