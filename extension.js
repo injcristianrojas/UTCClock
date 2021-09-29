@@ -105,19 +105,19 @@ let UTCClock = GObject.registerClass(
                 "Time text to show"
             );
             this.PopupMenuItemUTC = new PopupMenu.PopupMenuItem("UTC");
-            this.menuSignal2 = this.PopupMenuItemUTC.connect('activate', Lang.bind(this, function() {
+            this.menuSignal2 = this.PopupMenuItemUTC.connect('activate', () => {
                 this.settings.set_string("time-text", "UTC");
-            }));
+            });
             this.ClockMenuItemText.menu.addMenuItem(this.PopupMenuItemUTC);
             this.PopupMenuItemGMT = new PopupMenu.PopupMenuItem("GMT");
-            this.menuSignal3 = this.PopupMenuItemGMT.connect('activate', Lang.bind(this, function() {
+            this.menuSignal3 = this.PopupMenuItemGMT.connect('activate', () => {
                 this.settings.set_string("time-text", "GMT");
-            }));
+            });
             this.ClockMenuItemText.menu.addMenuItem(this.PopupMenuItemGMT);
             this.PopupMenuItemZ = new PopupMenu.PopupMenuItem("Z");
-            this.menuSignal4 = this.PopupMenuItemZ.connect('activate', Lang.bind(this, function() {
+            this.menuSignal4 = this.PopupMenuItemZ.connect('activate', () => {
                 this.settings.set_string("time-text", "Z");
-            }));
+            });
             this.ClockMenuItemText.menu.addMenuItem(this.PopupMenuItemZ);
             this.menu.addMenuItem(this.ClockMenuItemText);
 
@@ -206,9 +206,8 @@ let UTCClock = GObject.registerClass(
             );
 
             this.setTimeText();
-            this.settingsSignals[1] = this.settings.connect(
-                "changed::time-text",
-                Lang.bind(this, this.setTimeText)
+            this.settingsSignals[1] = this.settings.connect("changed::time-text",
+                this.setTimeText.bind(this)
             );
 
             this.setDateDisplayed();
