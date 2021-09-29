@@ -214,6 +214,7 @@ let UTCClock = GObject.registerClass(
             );
 
             this.buildMenu();
+            log_this('Enabled.');
         }
 
         disable() {
@@ -230,6 +231,7 @@ let UTCClock = GObject.registerClass(
             this.ClockMenuItemDate.disconnect(this.menuSignal5);
             this.ClockMenuItemOpacity.disconnect(this.menuSignal6);
             this.disconnect(this.menuSignal7);
+            log_this('Disabled.');
         }
     }
 );
