@@ -192,9 +192,9 @@ let UTCClock = GObject.registerClass(
             this.settingsSignals = [];
 
             this.clock = new GnomeDesktop.WallClock();
-            this.clocksignal = this.clock.connect(
+            this.clockSignal = this.clock.connect(
                 "notify::clock",
-                Lang.bind(this, this.updateTime)
+                this.updateTime.bind(this)
             );
 
             if (!this.gnomeSecondsSettings.get_boolean("clock-show-seconds"))
@@ -226,7 +226,7 @@ let UTCClock = GObject.registerClass(
         }
 
         disable() {
-            this.clock.disconnect(this.clocksignal);
+            this.clock.disconnect(this.clockSignal);
             this.gnomeSecondsSettings.disconnect(this.gnomeSecondsSignal);
             this.settings.disconnect(this.settingsSignals[0]);
             this.settings.disconnect(this.settingsSignals[1]);
