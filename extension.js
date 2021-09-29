@@ -226,7 +226,7 @@ let UTCClock = GObject.registerClass(
 let utcclock;
 
 function init() {
-
+    // Intentional
 }
 
 function enable() {
