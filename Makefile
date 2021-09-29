@@ -6,11 +6,11 @@ compile-schemas:
 	glib-compile-schemas schemas/
 
 build: compile-schemas
-	zip utcclock.zip extension.js LICENSE metadata.json convenience.js schemas/*
+	zip utcclock.zip extension.js LICENSE metadata.json schemas/*
 
 install: compile-schemas
 	mkdir -p $(PLUGIN_LOCATION)
-	cp -R extension.js LICENSE metadata.json convenience.js schemas/ $(PLUGIN_LOCATION)
+	cp -R extension.js LICENSE metadata.json schemas/ $(PLUGIN_LOCATION)
 	echo 'Plugin installed. Restart GNOME Shell.'
 
 uninstall:

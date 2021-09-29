@@ -10,9 +10,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const St = imports.gi.St;
-
-const Convenience = Me.imports.convenience;
-const log_this = Convenience.log_this;
+const getSettings = ExtensionUtils.getSettings;
 
 let UTCClock = GObject.registerClass(
     class UTCCLock extends PanelMenu.Button {
@@ -154,8 +152,8 @@ let UTCClock = GObject.registerClass(
                 hour12: false
             }
 
-            this.settings = Convenience.getSettings();
-            this.gnomeSecondsSettings = Convenience.getSettings(
+            this.settings = getSettings();
+            this.gnomeSecondsSettings = getSettings(
                 'org.gnome.desktop.interface'
             );
 
@@ -200,7 +198,7 @@ let UTCClock = GObject.registerClass(
             );
 
             this.buildMenu();
-            log_this('Enabled.');
+            this.log_this('Enabled.');
         }
 
         disable() {
@@ -217,7 +215,11 @@ let UTCClock = GObject.registerClass(
             this.ClockMenuItemDate.disconnect(this.menuSignal5);
             this.ClockMenuItemOpacity.disconnect(this.menuSignal6);
             this.disconnect(this.menuSignal7);
-            log_this('Disabled.');
+            this.log_this('Disabled.');
+        }
+
+        log_this(string) {
+            log(`[${Me.metadata.name}-${Me.metadata.version}] ${string}`);
         }
     }
 );
