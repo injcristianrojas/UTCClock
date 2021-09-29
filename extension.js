@@ -5,7 +5,6 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Gio = imports.gi.Gio;
 const GnomeDesktop = imports.gi.GnomeDesktop;
 const GObject = imports.gi.GObject;
-const Lang = imports.lang;
 const Main = imports.ui.main;
 const Me = ExtensionUtils.getCurrentExtension();
 const PanelMenu = imports.ui.panelMenu;
