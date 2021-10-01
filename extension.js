@@ -2,7 +2,6 @@
 
 const Clutter = imports.gi.Clutter;
 const ExtensionUtils = imports.misc.extensionUtils;
-const Gio = imports.gi.Gio;
 const GnomeDesktop = imports.gi.GnomeDesktop;
 const GObject = imports.gi.GObject;
 const Main = imports.ui.main;
