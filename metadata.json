@@ -5,6 +5,6 @@
     "uuid": "utcclock@injcristianrojas.github.com",
     "settings-schema": "org.gnome.shell.extensions.utcclock",
     "gettext-domain": "UTCClock",
-    "shell-version": ["40", "41"],
-    "version": "28"
+    "shell-version": ["40", "41", "42"],
+    "version": "29"
 }
