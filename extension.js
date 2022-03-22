@@ -237,4 +237,5 @@ function enable() {
 function disable() {
     utcclock.disable();
     utcclock.destroy();
+    utcclock = null;
 }
