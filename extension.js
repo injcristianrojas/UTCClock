@@ -151,6 +151,16 @@ let UTCClock = GObject.registerClass(
                 hour12: false
             }
 
+            /*
+            12-hour:
+
+            this.format_params = {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            }
+            */
+            
             this.settings = getSettings();
             this.gnomeSecondsSettings = getSettings(
                 'org.gnome.desktop.interface'
@@ -180,7 +190,8 @@ let UTCClock = GObject.registerClass(
             );
 
             this.setTimeText();
-            this.settingsSignals[1] = this.settings.connect('changed::time-text',
+            this.settingsSignals[1] = this.settings.connect(
+                'changed::time-text',
                 this.setTimeText.bind(this)
             );
 
