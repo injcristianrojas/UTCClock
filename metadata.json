@@ -6,5 +6,5 @@
     "settings-schema": "org.gnome.shell.extensions.utcclock",
     "gettext-domain": "UTCClock",
     "shell-version": ["40", "41", "42"],
-    "version": "30"
+    "version": "31"
 }
