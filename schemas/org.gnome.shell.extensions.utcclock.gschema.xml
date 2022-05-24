@@ -12,6 +12,10 @@
             <default>false</default>
             <summary>Show date</summary>
         </key>
+        <key name="twelvehour-enabled" type="b">
+            <default>false</default>
+            <summary>Use 12-hour format</summary>
+        </key>
         <key name="light-opacity" type="b">
             <default>true</default>
             <summary>Light opacity</summary>

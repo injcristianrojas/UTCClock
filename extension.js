@@ -57,6 +57,18 @@ let UTCClock = GObject.registerClass(
             this.updateTime();
         }
 
+        set12HourEnabled() {
+            let twelveHourEnabled = this.settings.get_boolean('twelvehour-enabled');
+            if (twelveHourEnabled) {
+                this.format_params['hour'] = 'numeric';
+                this.format_params['hour12'] = true;
+            } else {
+                this.format_params['hour'] = '2-digit';
+                this.format_params['hour12'] = false;
+            }
+            this.updateTime();
+        }
+
         setTimeText() {
             this.time_text = this.settings.get_string('time-text');
             this.updateTime();
@@ -123,6 +135,17 @@ let UTCClock = GObject.registerClass(
             });
             this.menu.addMenuItem(this.ClockMenuItemDate);
 
+            this.ClockMenu12Hour = new PopupMenu.PopupSwitchMenuItem(
+                '12-hour mode',
+                this.settings.get_boolean('twelvehour-enabled'),
+                { reactive: true }
+            );
+            this.menuSignal8 = this.ClockMenu12Hour.connect('toggled', (_object, value) => {
+                this.settings.set_boolean('twelvehour-enabled', value);
+            });
+            this.menu.addMenuItem(this.ClockMenu12Hour);
+            
+
             this.ClockMenuItemOpacity = new PopupMenu.PopupSwitchMenuItem(
                 'Light opacity',
                 this.settings.get_boolean('light-opacity'),
@@ -132,6 +155,7 @@ let UTCClock = GObject.registerClass(
                 this.settings.set_boolean('light-opacity', value);
             });
             this.menu.addMenuItem(this.ClockMenuItemOpacity);
+
             this.menuSignal7 = this.connect('button-press-event', () => {
                 if (this.gnomeSecondsSettings.get_boolean('clock-show-seconds'))
                     this.ClockMenuItemSeconds.set_reactive(true);
@@ -150,16 +174,6 @@ let UTCClock = GObject.registerClass(
                 minute: '2-digit',
                 hour12: false
             }
-
-            /*
-            12-hour:
-
-            this.format_params = {
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true
-            }
-            */
             
             this.settings = getSettings();
             this.gnomeSecondsSettings = getSettings(
@@ -207,6 +221,12 @@ let UTCClock = GObject.registerClass(
                 this.setLightOpacity.bind(this)
             );
 
+            this.set12HourEnabled();
+            this.settingsSignals[4] = this.settings.connect(
+                'changed::twelvehour-enabled',
+                this.set12HourEnabled.bind(this)
+            );
+            
             this.buildMenu();
             this.log_this('Enabled.');
         }
@@ -218,12 +238,14 @@ let UTCClock = GObject.registerClass(
             this.settings.disconnect(this.settingsSignals[1]);
             this.settings.disconnect(this.settingsSignals[2]);
             this.settings.disconnect(this.settingsSignals[3]);
+            this.settings.disconnect(this.settingsSignals[4]);
             this.ClockMenuItemSeconds.disconnect(this.menuSignal1);
             this.PopupMenuItemUTC.disconnect(this.menuSignal2);
             this.PopupMenuItemGMT.disconnect(this.menuSignal3);
             this.PopupMenuItemZ.disconnect(this.menuSignal4);
             this.ClockMenuItemDate.disconnect(this.menuSignal5);
             this.ClockMenuItemOpacity.disconnect(this.menuSignal6);
+            this.ClockMenu12Hour.disconnect(this.menuSignal8);
             this.disconnect(this.menuSignal7);
             this.log_this('Disabled.');
         }
