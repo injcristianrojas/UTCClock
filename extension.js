@@ -88,7 +88,7 @@ let UTCClock = GObject.registerClass(
                 this.settings.get_boolean('show-seconds'),
                 { reactive: true }
             );
-            this.menuSignal1 = this.ClockMenuItemSeconds.connect('toggled', (object, value) => {
+            this.menuSignal1 = this.ClockMenuItemSeconds.connect('toggled', (_object, value) => {
                 this.settings.set_boolean('show-seconds', value);
             });
             this.menu.addMenuItem(this.ClockMenuItemSeconds);
@@ -118,7 +118,7 @@ let UTCClock = GObject.registerClass(
                 this.settings.get_boolean('show-date'),
                 { reactive: true }
             );
-            this.menuSignal5 = this.ClockMenuItemDate.connect('toggled', (object, value) => {
+            this.menuSignal5 = this.ClockMenuItemDate.connect('toggled', (_object, value) => {
                 this.settings.set_boolean('show-date', value);
             });
             this.menu.addMenuItem(this.ClockMenuItemDate);
@@ -128,7 +128,7 @@ let UTCClock = GObject.registerClass(
                 this.settings.get_boolean('light-opacity'),
                 { reactive: true }
             );
-            this.menuSignal6 = this.ClockMenuItemOpacity.connect('toggled', (object, value) => {
+            this.menuSignal6 = this.ClockMenuItemOpacity.connect('toggled', (_object, value) => {
                 this.settings.set_boolean('light-opacity', value);
             });
             this.menu.addMenuItem(this.ClockMenuItemOpacity);
