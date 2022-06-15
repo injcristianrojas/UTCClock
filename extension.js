@@ -251,7 +251,7 @@ let UTCClock = GObject.registerClass(
         }
 
         log_this(string) {
-            log(`[${Me.metadata.name}-${Me.metadata.version}] ${string}`);
+            log(`[${Me.metadata.name} v${Me.metadata.version}] ${string}`);
         }
     }
 );
