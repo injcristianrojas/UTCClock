@@ -32,18 +32,10 @@ let UTCClock = GObject.registerClass(
 
         updateTime() {
             let now = new Date();
-            let utc = new Date(
-                now.getUTCFullYear(),
-                now.getUTCMonth(),
-                now.getUTCDate(),
-                now.getUTCHours(),
-                now.getUTCMinutes(),
-                now.getUTCSeconds()
-            );
             this.timeText.set_text(
                 new Intl.DateTimeFormat(
                     'default', this.format_params
-                ).format(utc) + ' ' + this.time_text
+                ).format(now) + ' ' + this.time_text
             );
         }
 
@@ -172,7 +164,8 @@ let UTCClock = GObject.registerClass(
             this.format_params = {
                 hour: '2-digit',
                 minute: '2-digit',
-                hour12: false
+                hour12: false,
+                timeZone: 'UTC',
             }
             
             this.settings = getSettings();
