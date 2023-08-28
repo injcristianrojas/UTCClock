@@ -1,20 +1,21 @@
 'use strict';
 
-const Clutter = imports.gi.Clutter;
-const ExtensionUtils = imports.misc.extensionUtils;
-const GnomeDesktop = imports.gi.GnomeDesktop;
-const GObject = imports.gi.GObject;
-const Main = imports.ui.main;
-const Me = ExtensionUtils.getCurrentExtension();
-const PanelMenu = imports.ui.panelMenu;
-const PopupMenu = imports.ui.popupMenu;
-const St = imports.gi.St;
-const getSettings = ExtensionUtils.getSettings;
+import Clutter from 'gi://Clutter';
+import GnomeDesktop from 'gi://GnomeDesktop';
+import GObject from 'gi://GObject';
+import St from 'gi://St';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+
+import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
+
+let utcclock;
 
 let UTCClock = GObject.registerClass(
     class UTCCLock extends PanelMenu.Button {
 
-        _init() {
+        _init(metadata, settings, gnomesettings) {
             super._init(0, 'UTCClock', false);
 
             // Label
@@ -26,6 +27,10 @@ let UTCClock = GObject.registerClass(
             let topBox = new St.BoxLayout();
             topBox.add_actor(this.timeText);
             this.add_actor(topBox);
+
+            this.metadata = metadata;
+            this.settings = settings;
+            this.gnomeSecondsSettings = gnomesettings;
 
             this.enable();
         }
@@ -167,11 +172,6 @@ let UTCClock = GObject.registerClass(
                 hour12: false,
                 timeZone: 'UTC',
             }
-            
-            this.settings = getSettings();
-            this.gnomeSecondsSettings = getSettings(
-                'org.gnome.desktop.interface'
-            );
 
             this.gnomeSecondsSignal =  this.gnomeSecondsSettings.connect('changed::clock-show-seconds', () => {
                 if (!this.gnomeSecondsSettings.get_boolean('clock-show-seconds')) {
@@ -244,24 +244,23 @@ let UTCClock = GObject.registerClass(
         }
 
         log_this(string) {
-            log(`[${Me.metadata.name} v${Me.metadata.version}] ${string}`);
+            log(`[${this.metadata.name} v${this.metadata.version}] ${string}`);
         }
     }
 );
 
-let utcclock;
 
-function init() {
-    // Intentional
-}
+export default class WaylandOrX11Extension extends Extension {
 
-function enable() {
-    utcclock = new UTCClock();
-    Main.panel._addToPanelBox('utcclock', utcclock, 1, Main.panel._centerBox);
-}
+    enable() {
+        utcclock = new UTCClock(this.metadata, this.getSettings(), this.getSettings('org.gnome.desktop.interface'));
+        Main.panel._addToPanelBox('utcclock', utcclock, 1, Main.panel._centerBox);
+    }
 
-function disable() {
-    utcclock.disable();
-    utcclock.destroy();
-    utcclock = null;
+    disable() {
+        utcclock.disable();
+        utcclock.destroy();
+        utcclock = null;
+    }
+
 }
