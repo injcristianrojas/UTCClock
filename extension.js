@@ -20,7 +20,7 @@ let UTCClock = GObject.registerClass(
 
             // Label
             this.timeText = new St.Label({
-                y_align: Clutter.ActorAlign.CENTER,
+                y_align: Clutter.ActorAlign.END,
                 text: '...'
             });
 
