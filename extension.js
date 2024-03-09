@@ -91,6 +91,11 @@ let UTCClock = GObject.registerClass(
             this.updateTime();
         }
 
+        setPosition(position) {
+            this.get_parent().remove_actor(this);
+            Main.panel._centerBox.insert_child_at_index(this, position);
+        }
+
         buildMenu() {
             this.ClockMenuItemSeconds = new PopupMenu.PopupSwitchMenuItem(
                 'Show seconds',
