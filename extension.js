@@ -250,7 +250,7 @@ let UTCClock = GObject.registerClass(
 );
 
 
-export default class WaylandOrX11Extension extends Extension {
+export default class UTCClockExtension extends Extension {
 
     enable() {
         utcclock = new UTCClock(this.metadata, this.getSettings(), this.getSettings('org.gnome.desktop.interface'));
