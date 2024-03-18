@@ -25,8 +25,14 @@ let UTCClock = GObject.registerClass(
             });
 
             let topBox = new St.BoxLayout();
-            topBox.add_actor(this.timeText);
-            this.add_actor(topBox);
+
+            if (Clutter.Container === undefined) {
+                topBox.add_child(this.timeText);
+                this.add_child(topBox);
+            } else {
+                topBox.add_actor(this.timeText);
+                this.add_actor(topBox);
+            }
 
             this.metadata = metadata;
             this.settings = settings;
