@@ -8,6 +8,6 @@
     "donations": {
         "paypal": "injcristianrojas"
     },
-    "shell-version": ["45", "46", "47"],
-    "version": "37"
+    "shell-version": ["45", "46", "47", "48"],
+    "version": "38"
 }
