@@ -1,13 +1,20 @@
 {
-    "name": "UTCClock",
-    "description": "UTC clock for the top bar",
-    "url": "https://github.com/injcristianrojas/UTCClock",
-    "uuid": "utcclock@injcristianrojas.github.com",
-    "settings-schema": "org.gnome.shell.extensions.utcclock",
-    "gettext-domain": "UTCClock",
-    "donations": {
-        "paypal": "injcristianrojas"
-    },
-    "shell-version": ["45", "46", "47", "48", "49"],
-    "version": "39"
+  "name": "UTCClock",
+  "description": "UTC clock for the top bar",
+  "url": "https://github.com/injcristianrojas/UTCClock",
+  "uuid": "utcclock@injcristianrojas.github.com",
+  "settings-schema": "org.gnome.shell.extensions.utcclock",
+  "gettext-domain": "UTCClock",
+  "donations": {
+    "paypal": "injcristianrojas"
+  },
+  "shell-version": [
+    "45",
+    "46",
+    "47",
+    "48",
+    "49",
+    "50"
+  ],
+  "version": "40"
 }
