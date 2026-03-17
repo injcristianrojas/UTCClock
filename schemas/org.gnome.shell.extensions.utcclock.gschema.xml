@@ -8,6 +8,10 @@
             <default>"UTC"</default>
             <summary>Time text</summary>
         </key>
+        <key name="date-format" type="s">
+            <default>'locale'</default>
+            <summary>Date format</summary>
+        </key>
         <key name="show-date" type="b">
             <default>false</default>
             <summary>Show date</summary>

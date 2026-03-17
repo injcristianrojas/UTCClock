@@ -43,11 +43,24 @@ let UTCClock = GObject.registerClass(
 
         updateTime() {
             let now = new Date();
-            this.timeText.set_text(
-                new Intl.DateTimeFormat(
+            let timeString;
+            // ISO 8601 date format support
+            if (this.dateFormat === 'iso8601') {
+                let year = now.getUTCFullYear();
+                let month = String(now.getUTCMonth() + 1).padStart(2, '0');
+                let day = String(now.getUTCDate()).padStart(2, '0');
+                let hours = String(now.getUTCHours()).padStart(2, '0');
+                let minutes = String(now.getUTCMinutes()).padStart(2, '0');
+                let seconds = this.format_params.second ? String(now.getUTCSeconds()).padStart(2, '0') : '';
+                let datePart = this.format_params.day ? `${year}-${month}-${day}T` : '';
+                let timePart = `${hours}:${minutes}${seconds ? ':' + seconds : ''}Z`;
+                timeString = datePart + timePart;
+            } else {
+                timeString = new Intl.DateTimeFormat(
                     'default', this.format_params
-                ).format(now) + ' ' + this.time_text
-            );
+                ).format(now);
+            }
+            this.timeText.set_text(timeString + (this.time_text ? ' ' + this.time_text : ''));
         }
 
         setSecondsDisplayed() {
@@ -73,7 +86,8 @@ let UTCClock = GObject.registerClass(
         }
 
         setTimeText() {
-            this.time_text = this.settings.get_string('time-text');
+            let text = this.settings.get_string('time-text');
+            this.time_text = text === 'none' ? '' : text;
             this.updateTime();
         }
 
@@ -88,6 +102,12 @@ let UTCClock = GObject.registerClass(
                 delete this.format_params['month'];
                 delete this.format_params['day'];
             }
+            this.updateTime();
+        }
+
+        // Sets the date format to either 'locale' or 'iso8601'.
+        setDateFormat() {
+            this.dateFormat = this.settings.get_string('date-format');
             this.updateTime();
         }
 
@@ -131,7 +151,27 @@ let UTCClock = GObject.registerClass(
                 this.settings.set_string('time-text', 'Z');
             });
             this.ClockMenuItemText.menu.addMenuItem(this.PopupMenuItemZ);
+            this.PopupMenuItemNone = new PopupMenu.PopupMenuItem('None');
+            this.menuSignal11 = this.PopupMenuItemNone.connect('activate', () => {
+                this.settings.set_string('time-text', 'none');
+            });
+            this.ClockMenuItemText.menu.addMenuItem(this.PopupMenuItemNone);
             this.menu.addMenuItem(this.ClockMenuItemText);
+
+            this.ClockMenuItemFormat = new PopupMenu.PopupSubMenuMenuItem(
+                'Date format'
+            );
+            this.PopupMenuItemLocale = new PopupMenu.PopupMenuItem('Locale');
+            this.menuSignal9 = this.PopupMenuItemLocale.connect('activate', () => {
+                this.settings.set_string('date-format', 'locale');
+            });
+            this.ClockMenuItemFormat.menu.addMenuItem(this.PopupMenuItemLocale);
+            this.PopupMenuItemISO = new PopupMenu.PopupMenuItem('ISO 8601');
+            this.menuSignal10 = this.PopupMenuItemISO.connect('activate', () => {
+                this.settings.set_string('date-format', 'iso8601');
+            });
+            this.ClockMenuItemFormat.menu.addMenuItem(this.PopupMenuItemISO);
+            this.menu.addMenuItem(this.ClockMenuItemFormat);
 
             this.ClockMenuItemDate = new PopupMenu.PopupSwitchMenuItem(
                 'Show date',
@@ -184,6 +224,8 @@ let UTCClock = GObject.registerClass(
                 timeZone: 'UTC',
             }
 
+            this.dateFormat = 'locale';
+
             this.gnomeSecondsSignal =  this.gnomeSecondsSettings.connect('changed::clock-show-seconds', () => {
                 if (!this.gnomeSecondsSettings.get_boolean('clock-show-seconds')) {
                     this.settings.set_boolean('show-seconds', false);
@@ -230,6 +272,12 @@ let UTCClock = GObject.registerClass(
                 'changed::twelvehour-enabled',
                 this.set12HourEnabled.bind(this)
             );
+
+            this.setDateFormat();
+            this.settingsSignals[5] = this.settings.connect(
+                'changed::date-format',
+                this.setDateFormat.bind(this)
+            );
             
             this.buildMenu();
             this.log_this('Enabled.');
@@ -243,13 +291,17 @@ let UTCClock = GObject.registerClass(
             this.settings.disconnect(this.settingsSignals[2]);
             this.settings.disconnect(this.settingsSignals[3]);
             this.settings.disconnect(this.settingsSignals[4]);
+            this.settings.disconnect(this.settingsSignals[5]);
             this.ClockMenuItemSeconds.disconnect(this.menuSignal1);
             this.PopupMenuItemUTC.disconnect(this.menuSignal2);
             this.PopupMenuItemGMT.disconnect(this.menuSignal3);
             this.PopupMenuItemZ.disconnect(this.menuSignal4);
+            this.PopupMenuItemNone.disconnect(this.menuSignal11);
             this.ClockMenuItemDate.disconnect(this.menuSignal5);
             this.ClockMenuItemOpacity.disconnect(this.menuSignal6);
             this.ClockMenu12Hour.disconnect(this.menuSignal8);
+            this.PopupMenuItemLocale.disconnect(this.menuSignal9);
+            this.PopupMenuItemISO.disconnect(this.menuSignal10);
             this.disconnect(this.menuSignal7);
             this.log_this('Disabled.');
         }
